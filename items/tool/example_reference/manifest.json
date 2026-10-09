@@ -1,0 +1,1 @@
+{"kind":"tool","slug":"example_reference","name":"Reference server (example)","description":"Example MCP connection template using example.com. Replace it with a reviewed reference server in your own submission; this placeholder does not provide live tools.","author":"david-darr","version":"1.0.0","license":"MIT","files":["server.json"]}

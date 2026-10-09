@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "generated_from_commit": "local",
+  "items": [
+    {
+      "kind": "automation",
+      "slug": "weekly_review",
+      "name": "Weekly review",
+      "description": "A weekly prompt to review progress, loose ends and the next week's priorities. Installs turned off.",
+      "author": "david-darr",
+      "version": "1.0.0",
+      "files": [
+        "automation.json"
+      ],
+      "path": "items/automation/weekly_review",
+      "archive_sha256": "3f14bdb8435be5b9f8bd4230b0e7f81ec0135989124ac650b45dad278c0a2a9f"
+    },
+    {
+      "kind": "skill",
+      "slug": "meeting_summary",
+      "name": "Meeting summary",
+      "description": "Turn meeting notes into decisions, owners and next steps without inventing missing details.",
+      "author": "david-darr",
+      "version": "1.0.0",
+      "files": [
+        "SKILL.md"
+      ],
+      "path": "items/skill/meeting_summary",
+      "archive_sha256": "4a4a9619c3df1f34f5c0e97f3fa3893ca047e7711bebda038e3d3a52391bebc0"
+    },
+    {
+      "kind": "tab",
+      "slug": "pomodoro",
+      "name": "Pomodoro",
+      "description": "A quiet 25-minute focus timer with a five-minute break. Runs entirely in the tab.",
+      "author": "david-darr",
+      "version": "1.0.0",
+      "files": [
+        "tab.json",
+        "routes.py",
+        "view.js"
+      ],
+      "path": "items/tab/pomodoro",
+      "archive_sha256": "61294b6485110c276d0a4f2ae4098ad36c27e5d00b2fafdb9a4cc507b9eef378"
+    },
+    {
+      "kind": "tool",
+      "slug": "example_reference",
+      "name": "Reference server (example)",
+      "description": "Example MCP connection template using example.com. Replace it with a reviewed reference server in your own submission; this placeholder does not provide live tools.",
+      "author": "david-darr",
+      "version": "1.0.0",
+      "files": [
+        "server.json"
+      ],
+      "path": "items/tool/example_reference",
+      "archive_sha256": "f8c5b570eb5e81d6fec3d480be40161cb7b2f6b07bd41e58ee349b7f33c7d585"
+    }
+  ]
+}

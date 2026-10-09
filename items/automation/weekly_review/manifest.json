@@ -1,0 +1,1 @@
+{"kind":"automation","slug":"weekly_review","name":"Weekly review","description":"A weekly prompt to review progress, loose ends and the next week's priorities. Installs turned off.","author":"david-darr","version":"1.0.0","license":"MIT","files":["automation.json"]}

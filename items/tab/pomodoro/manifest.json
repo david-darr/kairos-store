@@ -1,0 +1,1 @@
+{"kind":"tab","slug":"pomodoro","name":"Pomodoro","description":"A quiet 25-minute focus timer with a five-minute break. Runs entirely in the tab.","author":"david-darr","version":"1.0.0","license":"MIT","files":["tab.json","routes.py","view.js"]}
