@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_from_commit": "9a41b7dff4437626531d5e11eef580029315622d",
+  "generated_from_commit": "b95cbbcfba22c3a273ab12c4c01bd5009dbb9338",
   "items": [
     {
       "kind": "automation",
@@ -40,6 +40,25 @@
       ],
       "path": "items/skill/yamm_mail_merge",
       "archive_sha256": "569fd5ae4edc38ed25623165976d95c1d0d1bf95fc8916976e557348cd352039"
+    },
+    {
+      "kind": "tab",
+      "slug": "connecteam",
+      "name": "Connecteam",
+      "description": "Connecteam operations and a Kairos assistant in your chosen appearance.",
+      "author": "david-darr",
+      "version": "1.0.0",
+      "files": [
+        "README.md",
+        "api_index.json",
+        "mcp_server.py",
+        "routes.py",
+        "tab.json",
+        "view.css",
+        "view.js"
+      ],
+      "path": "items/tab/connecteam",
+      "archive_sha256": "652938d32bb0a9cb9049daa978478461a3a8a8c825f2aa88730aea6e20180e01"
     },
     {
       "kind": "tab",
