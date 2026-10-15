@@ -1,0 +1,12 @@
+{
+  "author": "david-darr",
+  "description": "Use Kairos computer control to prepare, review, track, and manage Yet Another Mail Merge campaigns in Google Sheets.",
+  "files": [
+    "SKILL.md"
+  ],
+  "kind": "skill",
+  "license": "MIT",
+  "name": "Yamm Mail Merge",
+  "slug": "yamm_mail_merge",
+  "version": "1.0.0"
+}
