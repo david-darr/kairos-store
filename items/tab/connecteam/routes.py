@@ -44,6 +44,10 @@ class AssistantBinding(BaseModel):
     managed: bool = False
 
 
+class SchedulerVersion(BaseModel):
+    version: str = Field(pattern=r"^v[12]$")
+
+
 class TeamMessage(BaseModel):
     sender_id: int = Field(gt=0)
     text: str = Field(min_length=1, max_length=1000)
@@ -91,6 +95,13 @@ async def _request(user: str, method: str, path: str, query: dict | None = None,
         async with httpx.AsyncClient(timeout=45, follow_redirects=False) as client:
             response = await client.request(method.upper(), target, **kwargs)
         if response.status_code in (401, 403):
+            if response.status_code == 403 and path.startswith("/scheduler/v2/"):
+                try:
+                    detail = response.json().get("detail", "")
+                except ValueError:
+                    detail = ""
+                if isinstance(detail, str) and "vision" in detail.lower() and "migrat" in detail.lower():
+                    raise HTTPException(403, "Scheduler V2 requires Connecteam JS Vision migration. Contact Connecteam Support, or select V1 in Schedule.")
             raise HTTPException(response.status_code, "Connecteam denied this API key or operation. Check its scopes and account plan.")
         response.raise_for_status()
         if len(response.content) > MAX_RESULT_BYTES:
@@ -120,7 +131,17 @@ async def _request(user: str, method: str, path: str, query: dict | None = None,
 @router.get("/settings")
 async def get_settings(user: str = Depends(require_admin)):
     saved = _settings(user)
-    return {"configured": bool(saved.get("api_key")), "region": saved.get("region", "global")}
+    return {"configured": bool(saved.get("api_key")), "region": saved.get("region", "global"),
+            "scheduler_version": saved.get("scheduler_version", "v2")}
+
+
+@router.put("/scheduler-version")
+async def scheduler_version(body: SchedulerVersion, user: str = Depends(require_admin)):
+    records = api.read_json("settings.json", {})
+    current = records.setdefault(user, {})
+    current["scheduler_version"] = body.version
+    api.write_json("settings.json", records)
+    return {"scheduler_version": body.version}
 
 
 @router.put("/settings")
@@ -138,7 +159,8 @@ async def put_settings(body: Settings, user: str = Depends(require_admin)):
     current["region"] = body.region
     records[user] = current
     api.write_json("settings.json", records)
-    return {"configured": True, "region": body.region}
+    return {"configured": True, "region": body.region,
+            "scheduler_version": current.get("scheduler_version", "v2")}
 
 
 @router.delete("/settings")
@@ -180,7 +202,9 @@ async def assistant_session(user: str = Depends(require_admin)):
     session_id = api.chat_session(f"{user}:assistant", "Connecteam assistant",
                                   untrusted="Connecteam workforce data and API responses")
     seeds = api.read_json("assistant_sessions.json", {})
-    if seeds.get(user) != session_id:
+    version = _settings(user).get("scheduler_version", "v2")
+    seed_id = f"{session_id}:scheduler-{version}:1"
+    if seeds.get(user) != seed_id:
         api.append_chat_message(session_id, "user",
             "Workspace context: help me manage my Connecteam account using the selected Connecteam MCP tools. "
             "Use connecteam_api_reference to check current endpoint schemas before unfamiliar API calls. "
@@ -189,8 +213,13 @@ async def assistant_session(user: str = Depends(require_admin)):
             "or messages before executing them. Report success only after the API succeeds. "
             "The Updates/feed and existing chat-message history are not exposed by the documented public API; "
             "do not invent those endpoints. Create-shift requests take a JSON array, not a shifts wrapper. "
+            f"The workspace scheduling preference is {version}. Use connecteam_scheduler_request for shifts; "
+            "read connecteam_scheduler_guide before group edits. V2 requires JS Vision migration; "
+            "never retry a failed write using V1 or convert a group deletion into individual writes. "
+            "Scheduler discovery stays on V1. V2 uses base IDs and deletes the entire group; "
+            "set isEditForAllUsers=true for whole-group edits. "
             "I can refresh the tab after your task finishes.")
-        seeds[user] = session_id
+        seeds[user] = seed_id
         api.write_json("assistant_sessions.json", seeds)
     return {"session_id": session_id, "integration_id": _settings(user).get("integration_id")}
 

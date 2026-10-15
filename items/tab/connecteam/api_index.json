@@ -1097,5 +1097,26 @@
     "slug": "create_webhook_settings_v1_webhooks_post",
     "group": "Webhook settings",
     "description": "Create individual webhook settings under specified details"
+  },
+  {
+    "slug": "scheduler-v2-guide",
+    "title": "Scheduler V2 / JS Vision overview",
+    "url": "https://developer.connecteam.com/docs/scheduler-shifts-vision.md",
+    "group": "Job scheduling V2",
+    "description": "V2 scheduling requires JS Vision migration. Group shifts, version availability and routing."
+  },
+  {
+    "slug": "scheduler-v2-endpoints",
+    "title": "Scheduler V2 endpoint guide",
+    "url": "https://developer.connecteam.com/docs/scheduler-shifts-vision-endpoints.md",
+    "group": "Job scheduling V2",
+    "description": "V2 shift listing, creation, group updates, deletion, pagination and validation rules."
+  },
+  {
+    "slug": "scheduler-v2-ids",
+    "title": "Scheduler V2 shift IDs and response shapes",
+    "url": "https://developer.connecteam.com/docs/scheduler-shifts-vision-ids-responses.md",
+    "group": "Job scheduling V2",
+    "description": "V2 base IDs, V1 slot IDs, aggregated members and remaining open spots."
   }
 ]

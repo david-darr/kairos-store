@@ -153,43 +153,62 @@ export async function render(container) {
     try{await people();}catch{page.append(el("p",{class:"meta",text:"User names could not load; shifts will show assigned user IDs."}));}
     const choose=select(schedulers.map(x=>[x.schedulerId??x.id,x.name]));
     const today=dateKey(new Date());const dow=new Date(today+"T12:00Z").getUTCDay();const day=input("date",addDays(today,-((dow+6)%7)),{"aria-label":"Week starting"});
+    const version=select([["v2","V2 · group shifts"],["v1","V1 · individual shifts"]],settings.scheduler_version||"v2");
     const calendar=el("div",{class:"ce-week-scroll"});let sequence=0;
     const selected=()=>schedulers.find(x=>String(x.schedulerId??x.id)===choose.value);
+    const shiftPath=(schedulerId,apiVersion)=>`/scheduler/${apiVersion}/schedulers/${eid(schedulerId)}/shifts`;
     async function editShift(shift=null) {
+      const schedulerId=choose.value,apiVersion=version.value,tz=selected().timezone||zone;
       let users;try{users=await people();}catch(error){throw new Error("Load the People list before assigning shifts. "+error.message);}
-      const tz=selected().timezone||zone;
       const title=input("text",shift?.title||"",{required:true,maxlength:128});
       const start=input("datetime-local",shift?localTime(shift.startTime,tz):`${day.value}T09:00`,{required:true});
       const end=input("datetime-local",shift?localTime(shift.endTime,tz):`${day.value}T17:00`,{required:true});
       const assigned=userPicker(users,shift?.assignedUserIds||[]);
       const publish=input("checkbox");publish.checked=shift?.isPublished||false;
       const open=input("checkbox");open.checked=shift?.isOpenShift||false;
+      const spots=input("number",shift?.openSpots??1,{min:1,max:100,step:1});
       const job=input("text",shift?.jobId||"");
-      form(shift?"Edit shift":"Create shift",[field("Title",title),el("div",{class:"ce-pair"},[field(`Starts (${tz})`,start),field(`Ends (${tz})`,end)]),field("Assigned people",assigned,"Select multiple people with Ctrl/Command. Open shifts have no assignees."),field("Job ID (optional)",job),field("Open shift",open),field("Publish to employees",publish)],async()=>{
+      assigned.disabled=open.checked;open.onchange=()=>{assigned.disabled=open.checked;};
+      // Preserve assignees who are not present in the loaded directory page.
+      const known=new Set([...assigned.options].map(x=>x.value));
+      for(const id of shift?.assignedUserIds||[])if(!known.has(String(id))){const option=el("option",{value:String(id),text:person(id)});option.selected=true;assigned.append(option);}
+      form(shift?"Edit shift":"Create shift",[...(shift&&apiVersion==="v2"?[el("p",{class:"meta",text:"Changes apply to the entire group. Assigned people replaces the group's complete member list."})]:[]),field("Title",title),el("div",{class:"ce-pair"},[field(`Starts (${tz})`,start),field(`Ends (${tz})`,end)]),field("Assigned people",assigned,apiVersion==="v2"?"Select multiple people with Ctrl/Command. Existing claimed spots on open shifts are preserved.":"V1 supports one assigned person per shift."),field("Job ID (optional)",job),field("Open shift",open),...(apiVersion==="v2"?[field("Open spots",spots,"Used for open shifts; 1–100 spots.")]:[]),field("Publish to employees",publish)],async()=>{
         const startTime=epoch(start.value,tz),endTime=epoch(end.value,tz);if(endTime<=startTime)throw new Error("The shift must end after it starts.");
         const payload={title:title.value.trim(),startTime,endTime,timezone:tz,assignedUserIds:open.checked?[]:[...assigned.selectedOptions].map(x=>Number(x.value)),isOpenShift:open.checked,isPublished:publish.checked};
-        if(job.value.trim())payload.jobId=job.value.trim();if(shift)payload.id=shift.id;
-        await write(shift?"PUT":"POST",`/scheduler/v1/schedulers/${eid(choose.value)}/shifts`,[payload]);await load();
+        if(apiVersion==="v1"&&payload.assignedUserIds.length>1)throw new Error("Select one person for V1, or use V2 for a group shift.");
+        if(payload.isPublished&&!payload.isOpenShift&&!payload.assignedUserIds.length)throw new Error("Published shifts need an assignee or must be open shifts.");
+        if(apiVersion==="v2"){
+          if(open.checked){const count=Number(spots.value);if(!Number.isInteger(count)||count<1||count>100)throw new Error("Open spots must be a whole number from 1 to 100.");payload.openSpots=count;}
+          if(shift){
+            payload.isEditForAllUsers=true;
+            const original=[...(shift.assignedUserIds||[])].sort((a,b)=>a-b);
+            const updated=[...payload.assignedUserIds].sort((a,b)=>a-b);
+            if((shift.isOpenShift&&open.checked)||JSON.stringify(original)===JSON.stringify(updated))delete payload.assignedUserIds;
+          }
+        }
+        if(job.value.trim())payload.jobId=job.value.trim();if(shift)payload.shiftId=shift.id;
+        await write(shift?"PUT":"POST",shiftPath(schedulerId,apiVersion),[payload]);await load();
       },shift?"Save shift":"Create shift");
     }
     const controls=toolbar(field("Schedule",choose),button("Previous week",async()=>{day.value=addDays(day.value,-7);await load();},"btn quiet"),field("Week starting",day),button("Next week",async()=>{day.value=addDays(day.value,7);await load();},"btn quiet"),button("Create shift",()=>editShift(),"btn primary"));
-    page.append(controls,calendar);
+    controls.prepend(field("Scheduling API",version));
+    page.append(controls,el("p",{class:"meta",text:"V2 supports group shifts and multiple open spots on JS Vision accounts. Use V1 for accounts that have not migrated. V2 deletes remove the entire group."}),calendar);
     const load=async()=>{
       const ticket=++sequence;calendar.replaceChildren(el("p",{class:"meta",text:"Loading shifts…"}));
       try{
-        const tz=selected().timezone||zone;
-        const shifts=rows(await read(`/scheduler/v1/schedulers/${eid(choose.value)}/shifts`,{startTime:epoch(day.value+"T00:00",tz),endTime:epoch(addDays(day.value,7)+"T00:00",tz)-1,limit:100,offset:0}),"shifts");
+        const tz=selected().timezone||zone,schedulerId=choose.value,apiVersion=version.value;
+        const shifts=rows(await read(shiftPath(schedulerId,apiVersion),{startTime:epoch(day.value+"T00:00",tz),endTime:epoch(addDays(day.value,7)+"T00:00",tz)-1,limit:100,offset:0}),"shifts");
         if(!live(page)||ticket!==sequence)return;
         const week=el("div",{class:"ce-week"});
         for(let i=0;i<7;i++){
           const key=addDays(day.value,i);const col=el("section",{class:`ce-day ${key===today?"ce-today":""}`},[el("h4",{text:new Date(key+"T12:00Z").toLocaleDateString([],{timeZone:"UTC",weekday:"short",month:"short",day:"numeric"})})]);
           const onDay=shifts.filter(s=>s.startTime&&s.endTime&&s.startTime<epoch(addDays(key,1)+"T00:00",tz)&&s.endTime>epoch(key+"T00:00",tz));
-          for(const s of onDay){const row=el("article",{class:"ce-shift"},[button(s.title||"Shift",()=>editShift(s),"btn quiet ce-shift-title"),el("div",{class:"meta",text:`${when(s.startTime,tz)} – ${when(s.endTime,tz)}`}),el("p",{text:s.isOpenShift?"Open shift":(s.assignedUserIds||[]).map(person).join(", ")||"Unassigned"}),badge(s.isPublished?"Published":"Draft"),button("Delete",()=>remove(s.title||"shift",`/scheduler/v1/schedulers/${eid(choose.value)}/shifts/${eid(s.id)}`,load),"btn quiet ce-danger")]);col.append(row);}
+          for(const s of onDay){const row=el("article",{class:"ce-shift"},[button(s.title||"Shift",()=>editShift(s),"btn quiet ce-shift-title"),el("div",{class:"meta",text:`${when(s.startTime,tz)} – ${when(s.endTime,tz)}`}),el("p",{text:s.isOpenShift?`Open shift${apiVersion==="v2"?` · ${s.openSpots??1} open spots`:""}`:(s.assignedUserIds||[]).map(person).join(", ")||"Unassigned"}),badge(s.isPublished?"Published":"Draft"),button(apiVersion==="v2"?"Delete group":"Delete",()=>remove(apiVersion==="v2"?`entire shift group: ${s.title||s.id}`:s.title||"shift",`${shiftPath(schedulerId,apiVersion)}/${eid(s.id)}`,load),"btn quiet ce-danger")]);col.append(row);}
           if(!onDay.length)col.append(el("span",{class:"meta ce-day-empty",text:"No shifts"}));week.append(col);
         }
-        calendar.replaceChildren(el("div",{class:"meta ce-section-meta",text:`Times shown in ${tz}. ${shifts.length} shifts loaded${shifts.length===100?"; narrow the date range to see fewer records":""}.`}),week);
+        calendar.replaceChildren(el("div",{class:"meta ce-section-meta",text:`${apiVersion.toUpperCase()} · Times shown in ${tz}. ${shifts.length} shifts loaded${shifts.length===100?"; narrow the date range to see fewer records":""}.`}),week);
       }catch(error){if(ticket===sequence)fail(calendar,error,load);}
-    };choose.onchange=guard(load);day.onchange=guard(load);await load();
+    };choose.onchange=guard(load);day.onchange=guard(load);version.onchange=guard(async()=>{version.disabled=true;try{const preference=await api(ROOT+"/scheduler-version",{method:"PUT",toast:false,body:JSON.stringify({version:version.value})});settings.scheduler_version=preference.scheduler_version;await Promise.all([load(),mountAssistant()]);}catch(error){version.value=settings.scheduler_version||"v2";throw error;}finally{version.disabled=false;}});await load();
   }
 
   async function clock(page) {
