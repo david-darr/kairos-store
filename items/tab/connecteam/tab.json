@@ -2,11 +2,11 @@
   "api": 1,
   "blurb": "Schedules, time tracking, tasks and a connected assistant.",
   "description": "Connecteam operations and a Kairos assistant in your chosen appearance.",
-  "detail": "Kairos-native workspace with overview, schedule, time clock, tasks, people, forms, jobs and connection settings. Includes a bundled local MCP and persistent Kairos chat.",
+  "detail": "Kairos-native workspace with overview, schedule, time clock, tasks, people, forms, jobs and connection settings. Includes a bundled local MCP and persistent Kairos chat. Scheduling supports V2 group shifts and multiple open spots, with a V1 option for accounts without JS Vision.",
   "hooks": [],
   "icon_svg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"17\" rx=\"2\"/><path d=\"M8 2v4m8-4v4M3 9h18M7 13h3m4 0h3m-10 4h3\"/></svg>",
   "name": "Connecteam",
   "reads": "Reads and changes Connecteam data using your encrypted API key and its allowed scopes. The assistant uses the Connecteam MCP connection you enable.",
   "slug": "connecteam",
-  "version": "1.0.0"
+  "version": "1.0.1"
 }

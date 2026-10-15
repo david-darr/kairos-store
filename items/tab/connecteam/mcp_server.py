@@ -4,15 +4,14 @@ Set CONNECTEAM_API_KEY and optionally CONNECTEAM_API_REGION=au before launch.
 """
 import argparse
 from pathlib import Path
+from typing import Literal
 import httpx
 import base64
 import binascii
 import json
 import os
 import re
-from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode, urlsplit
-from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
@@ -23,14 +22,6 @@ MUTATING_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
 MAX_RESPONSE_BYTES = 4 * 1024 * 1024
 MAX_UPLOAD_BYTES = 12 * 1024 * 1024
 MAX_DOWNLOAD_BYTES = 12 * 1024 * 1024
-
-
-class _NoRedirect(HTTPRedirectHandler):
-    def redirect_request(self, req, fp, code, msg, headers, newurl):
-        return None
-
-
-_OPENER = build_opener(_NoRedirect())
 
 
 def _base_url() -> str:
@@ -66,28 +57,112 @@ def _request(method: str, path: str, query: dict | None = None, body=None,
     elif body is not None:
         data = json.dumps(body, ensure_ascii=False).encode("utf-8")
         headers["Content-Type"] = "application/json"
-    req = Request(url, data=data, headers=headers, method=method)
     try:
-        with _OPENER.open(req, timeout=45) as response:
-            raw = response.read(MAX_RESPONSE_BYTES + 1)
-            if len(raw) > MAX_RESPONSE_BYTES:
-                raise ToolError("Response exceeds 4 MiB; narrow the request or page results.")
-            if not raw:
-                return {"status": response.status, "data": {}}
-            try:
-                return json.loads(raw.decode("utf-8"))
-            except (UnicodeDecodeError, json.JSONDecodeError):
-                raise ToolError("Connecteam returned a non-JSON response. Use the attachment workflow for file bytes.") from None
-    except HTTPError as exc:
-        if exc.code in (401, 403):
-            raise ToolError("Connecteam denied the API key or operation. Check scopes and account plan.") from None
-        try:
-            detail = exc.read(2000).decode("utf-8", "replace")
-        except Exception:
-            detail = ""
-        raise ToolError(f"Connecteam returned HTTP {exc.code}: {detail[:1200]}") from None
-    except (URLError, TimeoutError):
+        with httpx.Client(timeout=45, follow_redirects=False) as client:
+            with client.stream(method, url, content=data, headers=headers) as response:
+                _check_response(response, path, key)
+                raw = _read_bounded(response, MAX_RESPONSE_BYTES, "Response exceeds 4 MiB; narrow the request or page results.")
+                if not raw:
+                    return {"status": response.status_code, "data": {}}
+                try:
+                    return json.loads(raw.decode("utf-8"))
+                except (UnicodeDecodeError, json.JSONDecodeError):
+                    raise ToolError("Connecteam returned a non-JSON response. Use the attachment workflow for file bytes.") from None
+    except httpx.HTTPError:
         raise ToolError("Could not reach Connecteam; check the region and network.") from None
+
+
+def _read_bounded(response, limit: int, message: str) -> bytes:
+    chunks, size = [], 0
+    for chunk in response.iter_bytes():
+        size += len(chunk)
+        if size > limit:
+            raise ToolError(message)
+        chunks.append(chunk)
+    return b"".join(chunks)
+
+
+def _check_response(response, path: str = "", key: str = ""):
+    if 200 <= response.status_code < 300:
+        return
+    # Keep the real upstream status and bounded diagnostic; never echo credentials.
+    raw = bytearray()
+    for chunk in response.iter_bytes():
+        raw.extend(chunk[:2000 - len(raw)])
+        if len(raw) >= 2000:
+            break
+    detail = bytes(raw).decode("utf-8", "replace")
+    if key:
+        detail = detail.replace(key, "[redacted]")
+    if response.status_code == 403:
+        if "browser_signature_banned" in detail or "Error 1010" in detail:
+            raise ToolError("Connecteam HTTP 403: Cloudflare blocked the HTTP client signature; this is not a scheduler migration or API-key error.")
+        if path.startswith("/scheduler/v2/") and "vision" in detail.lower() and "migrat" in detail.lower():
+            raise ToolError("Connecteam HTTP 403: Scheduler V2 requires JS Vision migration. Contact Connecteam Support or explicitly choose V1; do not retry writes under another version.")
+    raise ToolError(f"Connecteam returned HTTP {response.status_code}: {detail[:1200]}")
+
+
+@server.tool()
+def connecteam_scheduler_guide() -> str:
+    """Read Scheduler V2 routing, group-edit and ID rules before scheduling actions."""
+    return json.dumps({
+        "default_version": "v2", "requires": "Connecteam JS Vision migration. Only diagnose migration failure from an actual V2 API error explicitly mentioning it; test reads before concluding access is unavailable.",
+        "discovery": "/scheduler/v1/schedulers", "shifts": "/scheduler/{v1|v2}/schedulers/{schedulerId}/shifts",
+        "ids": "V2 requires base IDs. V1 slot IDs contain a colon; never silently broaden a slot action to a group action.",
+        "create": "Array of shifts. V2 allows multiple assignedUserIds and 1–100 openSpots.",
+        "update": "Array with shiftId per item. Explicitly set isEditForAllUsers. True edits everyone; include a complete assignedUserIds list only to replace membership. False requires selected assignedUserIds and splits those users into a separate shift.",
+        "delete": "V2 DELETE removes the entire group. Removing a member requires PUT with the remaining users.",
+        "response": "V2 lists one shift per group. Preserve createdShifts and deletedShiftIds from update responses; refresh after writes.",
+        "references": ["https://developer.connecteam.com/docs/scheduler-shifts-vision",
+                       "https://developer.connecteam.com/docs/scheduler-shifts-vision-endpoints",
+                       "https://developer.connecteam.com/docs/scheduler-shifts-vision-ids-responses"],
+    }, ensure_ascii=False)
+
+
+@server.tool()
+def connecteam_scheduler_request(
+    operation: Literal["schedulers", "list_shifts", "get_shift", "create_shifts", "update_shifts", "delete_shift"],
+    scheduler_id: int = 0, api_version: Literal["v1", "v2"] = "v2", shift_id: str = "",
+    query_json: str = "{}", body_json: str = "", confirm_write: bool = False, confirm_delete: str = "",
+) -> str:
+    """Call Scheduler V2 (default) or explicit V1. Read connecteam_scheduler_guide first. query_json carries date-range/filter/paging parameters. Create/update body_json is an array; updates use shiftId and an explicit isEditForAllUsers boolean on V2. Get/delete require shift_id. V2 deletes the ENTIRE group: obtain approval for that scope before setting confirm_write=true and confirm_delete='DELETE'. All writes require user approval. No automatic version fallback. Additional API operations remain available through connecteam_api_request."""
+    methods = {"schedulers": "GET", "list_shifts": "GET", "get_shift": "GET",
+               "create_shifts": "POST", "update_shifts": "PUT", "delete_shift": "DELETE"}
+    if operation not in methods or api_version not in ("v1", "v2"):
+        raise ToolError("Choose a documented scheduler operation and v1 or v2.")
+    if operation == "schedulers":
+        path = "/scheduler/v1/schedulers"
+    else:
+        if scheduler_id <= 0:
+            raise ToolError("scheduler_id must be positive.")
+        path = f"/scheduler/{api_version}/schedulers/{scheduler_id}/shifts"
+        if operation in ("get_shift", "delete_shift"):
+            if not re.fullmatch(r"[A-Za-z0-9:_-]{1,200}", shift_id):
+                raise ToolError("Supply the exact shift_id returned by this API version.")
+            if api_version == "v2" and ":" in shift_id:
+                raise ToolError("V2 needs a base shift ID; read the V2 group and deletion rules before changing IDs.")
+            path += f"/{shift_id}"
+    if operation in ("create_shifts", "update_shifts"):
+        try:
+            items = json.loads(body_json)
+        except (ValueError, TypeError):
+            raise ToolError("body_json must be a JSON array of shift objects.") from None
+        if not isinstance(items, list) or not items or len(items) > 500 or any(not isinstance(x, dict) for x in items):
+            raise ToolError("Supply 1–500 shift objects in a JSON array.")
+        for item in items:
+            if operation == "update_shifts":
+                sid = item.get("shiftId")
+                if not isinstance(sid, str) or not re.fullmatch(r"[A-Za-z0-9:_-]{1,200}", sid):
+                    raise ToolError("Every update needs shiftId, not id.")
+                if api_version == "v2":
+                    if ":" in sid:
+                        raise ToolError("V2 updates require base IDs.")
+                    if type(item.get("isEditForAllUsers")) is not bool:
+                        raise ToolError("Explicitly choose isEditForAllUsers to protect group membership.")
+                    if item["isEditForAllUsers"] is False and not item.get("assignedUserIds"):
+                        raise ToolError("Splitting users requires a nonempty assignedUserIds list.")
+    return connecteam_api_request(methods[operation], path, query_json, body_json,
+                                  confirm_write, confirm_delete)
 
 
 @server.tool()
@@ -139,32 +214,33 @@ def connecteam_download_api_file(path: str, query_json: str = "{}") -> str:
     key = (os.environ.get("MCP_API_KEY") or os.environ.get("CONNECTEAM_API_KEY", "")).strip()
     if not key:
         raise ToolError("Save the API key on this Connecteam MCP integration.")
-    req = Request(url, headers={"X-API-KEY": key, "Accept": "*/*"}, method="GET")
     try:
-        try:
-            response = _OPENER.open(req, timeout=90)
-        except HTTPError as exc:
-            if exc.code not in (301, 302, 303, 307, 308):
-                raise
-            location = exc.headers.get("Location", "")
-            parsed = urlsplit(location)
-            if (parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password
-                    or not (parsed.hostname == "amazonaws.com" or parsed.hostname.endswith(".amazonaws.com")
-                            or parsed.hostname == "connecteam.com" or parsed.hostname.endswith(".connecteam.com"))):
-                raise ToolError("Connecteam returned an unexpected download host.") from None
-            # The signed storage URL receives the file request, never the API key.
-            response = _OPENER.open(Request(location, headers={"Accept": "*/*"}), timeout=90)
-        with response:
-            data = response.read(MAX_DOWNLOAD_BYTES + 1)
-            if len(data) > MAX_DOWNLOAD_BYTES:
-                raise ToolError("Download exceeds 12 MiB. Use the Connecteam tab to save it directly.")
-            return json.dumps({"content_type": response.headers.get("Content-Type", "application/octet-stream"),
-                               "filename": response.headers.get("Content-Disposition", ""),
-                               "size_bytes": len(data), "content_base64": base64.b64encode(data).decode("ascii")})
-    except HTTPError as exc:
-        raise ToolError(f"Connecteam download returned HTTP {exc.code}.") from None
-    except URLError:
+        with httpx.Client(timeout=90, follow_redirects=False) as client:
+            with client.stream("GET", url, headers={"X-API-KEY": key, "Accept": "*/*"}) as response:
+                if response.status_code in (301, 302, 303, 307, 308):
+                    location = response.headers.get("Location", "")
+                    parsed = urlsplit(location)
+                    if (parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password
+                            or not (parsed.hostname == "amazonaws.com" or parsed.hostname.endswith(".amazonaws.com")
+                                    or parsed.hostname == "connecteam.com" or parsed.hostname.endswith(".connecteam.com"))):
+                        raise ToolError("Connecteam returned an unexpected download host.")
+                else:
+                    _check_response(response, path, key)
+                    return _file_result(response)
+            # The signed storage request receives no API key, including on redirects.
+            with httpx.Client(timeout=90, follow_redirects=False) as storage:
+                with storage.stream("GET", location, headers={"Accept": "*/*"}) as response:
+                    _check_response(response, key=key)
+                    return _file_result(response)
+    except httpx.HTTPError:
         raise ToolError("Could not reach Connecteam or its file storage.") from None
+
+
+def _file_result(response) -> str:
+    data = _read_bounded(response, MAX_DOWNLOAD_BYTES, "Download exceeds 12 MiB. Use the Connecteam tab to save it directly.")
+    return json.dumps({"content_type": response.headers.get("Content-Type", "application/octet-stream"),
+                       "filename": response.headers.get("Content-Disposition", ""),
+                       "size_bytes": len(data), "content_base64": base64.b64encode(data).decode("ascii")})
 
 
 @server.tool()
@@ -193,14 +269,11 @@ def connecteam_upload_attachment(file_name: str, mime_type: str, feature_type: s
             or not (parsed.hostname == "amazonaws.com" or parsed.hostname.endswith(".amazonaws.com")
                     or parsed.hostname == "connecteam.com" or parsed.hostname.endswith(".connecteam.com"))):
         raise ToolError("Connecteam did not return a valid upload URL.")
-    upload_req = Request(upload_url, data=data, headers={"Content-Type": mime_type or "application/octet-stream"}, method="PUT")
     try:
-        with _OPENER.open(upload_req, timeout=60) as response:
-            if response.status >= 300:
-                raise ToolError(f"Upload storage returned HTTP {response.status}.")
-    except HTTPError as exc:
-        raise ToolError(f"Upload storage returned HTTP {exc.code}.") from None
-    except URLError:
+        with httpx.Client(timeout=60, follow_redirects=False) as storage:
+            with storage.stream("PUT", upload_url, content=data, headers={"Content-Type": mime_type or "application/octet-stream"}) as response:
+                _check_response(response)
+    except httpx.HTTPError:
         raise ToolError("Could not reach Connecteam upload storage.") from None
     complete = _request("PUT", f"/attachments/v1/files/complete-upload/{file_id}")
     return json.dumps({"file_id": file_id, "result": complete}, ensure_ascii=False)
@@ -228,6 +301,8 @@ def connecteam_api_reference(query: str = "", endpoint_slug: str = "") -> str:
         if not match:
             return json.dumps({"reference":row,"text":response.text[:40000]},ensure_ascii=False)
         spec = json.loads(match[1])
+        if not isinstance(spec, dict) or not spec.get("paths"):
+            return json.dumps({"reference":row,"text":response.text[:40000]},ensure_ascii=False)
         paths = spec.get("paths", {})
         needed = set()
         def scan(value):
@@ -254,7 +329,7 @@ def connecteam_api_reference(query: str = "", endpoint_slug: str = "") -> str:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--region", choices=("global","au"), default="global")
+    parser.add_argument("--region", choices=("global","au"), default=os.environ.get("CONNECTEAM_API_REGION", "global"))
     options = parser.parse_args()
     os.environ["CONNECTEAM_API_REGION"] = options.region
     server.run()
