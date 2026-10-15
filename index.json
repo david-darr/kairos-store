@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_from_commit": "b95cbbcfba22c3a273ab12c4c01bd5009dbb9338",
+  "generated_from_commit": "e72de759ac0d61cf691e8dea00ede2a7950a98ab",
   "items": [
     {
       "kind": "automation",
@@ -47,7 +47,7 @@
       "name": "Connecteam",
       "description": "Connecteam operations and a Kairos assistant in your chosen appearance.",
       "author": "david-darr",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "files": [
         "README.md",
         "api_index.json",
@@ -58,7 +58,7 @@
         "view.js"
       ],
       "path": "items/tab/connecteam",
-      "archive_sha256": "652938d32bb0a9cb9049daa978478461a3a8a8c825f2aa88730aea6e20180e01"
+      "archive_sha256": "55d9be71090868b2d477b2c9c27e3fe4d7d1b5c5f8efe75956559b301e2db617"
     },
     {
       "kind": "tab",
