@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_from_commit": "634e1b858ac6de2afbced980ca5a0065c348173a",
+  "generated_from_commit": "9a41b7dff4437626531d5e11eef580029315622d",
   "items": [
     {
       "kind": "automation",
@@ -27,6 +27,19 @@
       ],
       "path": "items/skill/meeting_summary",
       "archive_sha256": "4a4a9619c3df1f34f5c0e97f3fa3893ca047e7711bebda038e3d3a52391bebc0"
+    },
+    {
+      "kind": "skill",
+      "slug": "yamm_mail_merge",
+      "name": "Yamm Mail Merge",
+      "description": "Use Kairos computer control to prepare, review, track, and manage Yet Another Mail Merge campaigns in Google Sheets.",
+      "author": "david-darr",
+      "version": "1.0.0",
+      "files": [
+        "SKILL.md"
+      ],
+      "path": "items/skill/yamm_mail_merge",
+      "archive_sha256": "569fd5ae4edc38ed25623165976d95c1d0d1bf95fc8916976e557348cd352039"
     },
     {
       "kind": "tab",
