@@ -1,0 +1,1101 @@
+[
+  {
+    "title": "Get account information",
+    "url": "https://developer.connecteam.com/reference/get_account_information_me_get.md",
+    "slug": "get_account_information_me_get",
+    "group": "Account",
+    "description": "Retrieve the account information"
+  },
+  {
+    "title": "Get users",
+    "url": "https://developer.connecteam.com/reference/get_users_users_v1_users_get.md",
+    "slug": "get_users_users_v1_users_get",
+    "group": "Users",
+    "description": "Retrieves a list of all users associated with the account. Optionally, filter by user ID to receive specific user information"
+  },
+  {
+    "title": "Update users",
+    "url": "https://developer.connecteam.com/reference/edit_users_users_v1_users_put.md",
+    "slug": "edit_users_users_v1_users_put",
+    "group": "Users",
+    "description": "Update individual or multiple users associated with the account using the provided details. You can specify updates either by their phone number or unique userID."
+  },
+  {
+    "title": "Create users",
+    "url": "https://developer.connecteam.com/reference/create_users_users_v1_users_post.md",
+    "slug": "create_users_users_v1_users_post",
+    "group": "Users",
+    "description": "Create individual or multiple users associated with the account using the provided details."
+  },
+  {
+    "title": "Archive users",
+    "url": "https://developer.connecteam.com/reference/archive_users_users_v1_users_delete.md",
+    "slug": "archive_users_users_v1_users_delete",
+    "group": "Users",
+    "description": "Archive or permanently delete individual or multiple users associated with the account by their unique userID. In case of deletion, it will permanently delete the users from the system and cannot be…"
+  },
+  {
+    "title": "Delete user",
+    "url": "https://developer.connecteam.com/reference/delete_user_users_v1_users__userid__delete.md",
+    "slug": "delete_user_users_v1_users__userid__delete",
+    "group": "Users",
+    "description": "Delete or archive user associated with the account. In case of deletion, it will permanently delete the user from the system and cannot be undone."
+  },
+  {
+    "title": "Get custom fields",
+    "url": "https://developer.connecteam.com/reference/get_custom_fields_users_v1_custom_fields_get.md",
+    "slug": "get_custom_fields_users_v1_custom_fields_get",
+    "group": "Users",
+    "description": "Retrieves all custom fields associated with the account. Optionally, filter the results by categories, names, types, or custom field IDs."
+  },
+  {
+    "title": "Get custom field categories",
+    "url": "https://developer.connecteam.com/reference/get_custom_fields_users_v1_custom_field_categories_get.md",
+    "slug": "get_custom_fields_users_v1_custom_field_categories_get",
+    "group": "Users",
+    "description": "Retrieves all custom fields categories associated with the account. Optionally, filter the results by category IDs and/or names."
+  },
+  {
+    "title": "Update custom fields",
+    "url": "https://developer.connecteam.com/reference/update_custom_fields_users_v1_custom_fields_put.md",
+    "slug": "update_custom_fields_users_v1_custom_fields_put",
+    "group": "Users",
+    "description": "Update custom fields settings by their unique ID"
+  },
+  {
+    "title": "Create custom fields",
+    "url": "https://developer.connecteam.com/reference/create_custom_fields_users_v1_custom_fields_post.md",
+    "slug": "create_custom_fields_users_v1_custom_fields_post",
+    "group": "Users",
+    "description": "Create individual or multiple custom fields associated with the account under a specific category."
+  },
+  {
+    "title": "Delete custom fields",
+    "url": "https://developer.connecteam.com/reference/delete_custom_fields_users_v1_custom_fields_delete.md",
+    "slug": "delete_custom_fields_users_v1_custom_fields_delete",
+    "group": "Users",
+    "description": "Delete individual or multiple custom fields associated with the account by their unique ID."
+  },
+  {
+    "title": "Get custom field options",
+    "url": "https://developer.connecteam.com/reference/get_custom_field_options_users_v1_custom_fields__customfieldid__options_get.md",
+    "slug": "get_custom_field_options_users_v1_custom_fields__customfieldid__options_get",
+    "group": "Users",
+    "description": "Retrieve a list of all dropdown value options under a specified custom field"
+  },
+  {
+    "title": "Create custom field option",
+    "url": "https://developer.connecteam.com/reference/create_custom_field_option_users_v1_custom_fields__customfieldid__options_post.md",
+    "slug": "create_custom_field_option_users_v1_custom_fields__customfieldid__options_post",
+    "group": "Users",
+    "description": "Add new option for a specified custom field.The option will be added to the existing ones and will not overwrite them.Currently supports dropdown custom fields options."
+  },
+  {
+    "title": "Update custom field option",
+    "url": "https://developer.connecteam.com/reference/edit_custom_field_option_users_v1_custom_fields__customfieldid__options__optionid__put.md",
+    "slug": "edit_custom_field_option_users_v1_custom_fields__customfieldid__options__optionid__put",
+    "group": "Users",
+    "description": "Update the value for an option under a specified custom field"
+  },
+  {
+    "title": "Delete custom field option",
+    "url": "https://developer.connecteam.com/reference/delete_custom_field_option_users_v1_custom_fields__customfieldid__options__optionid__delete.md",
+    "slug": "delete_custom_field_option_users_v1_custom_fields__customfieldid__options__optionid__delete",
+    "group": "Users",
+    "description": "Delete the value for an option under a specified custom field"
+  },
+  {
+    "title": "Create smart group segment",
+    "url": "https://developer.connecteam.com/reference/create_smart_group_segment_users_v1_smart_group_segments_post.md",
+    "slug": "create_smart_group_segment_users_v1_smart_group_segments_post",
+    "group": "Users",
+    "description": "Create a new segment for smart groups associated with the account. The segment can be assigned a name and a color."
+  },
+  {
+    "title": "Create smart group",
+    "url": "https://developer.connecteam.com/reference/create_smart_group_users_v1_smart_groups_post.md",
+    "slug": "create_smart_group_users_v1_smart_groups_post",
+    "group": "Users",
+    "description": "Create a new smart group under a specified segment. The smart group settings are currently based only on dropdown custom field type (support for additional field types will be added in the future).…"
+  },
+  {
+    "title": "Get smart groups",
+    "url": "https://developer.connecteam.com/reference/get_smart_groups_users_v1_smart_groups_get.md",
+    "slug": "get_smart_groups_users_v1_smart_groups_get",
+    "group": "Users",
+    "description": "Retrieves a list of smart groups associated with the account."
+  },
+  {
+    "title": "Get smart group segments",
+    "url": "https://developer.connecteam.com/reference/get_smart_group_segments_users_v1_smart_group_segments_get.md",
+    "slug": "get_smart_group_segments_users_v1_smart_group_segments_get",
+    "group": "Users",
+    "description": "Retrieves all smart group segments associated with the account. Optionally, filter the results by segment IDs and/or names."
+  },
+  {
+    "title": "Update smart group",
+    "url": "https://developer.connecteam.com/reference/update_smart_group_users_v1_smart_groups__smartgroupid__put.md",
+    "slug": "update_smart_group_users_v1_smart_groups__smartgroupid__put",
+    "group": "Users",
+    "description": "Update an existing smart group by its unique identifier. Any changes to the applied filters will override the current settings and may result in changes to the users associated with the smart group."
+  },
+  {
+    "title": "Delete smart group",
+    "url": "https://developer.connecteam.com/reference/delete_smart_group_users_v1_smart_groups__smartgroupid__delete.md",
+    "slug": "delete_smart_group_users_v1_smart_groups__smartgroupid__delete",
+    "group": "Users",
+    "description": "Delete existing smart group by its unique identifier"
+  },
+  {
+    "title": "Promote to admin",
+    "url": "https://developer.connecteam.com/reference/invite_admin_users_v1_admins_post.md",
+    "slug": "invite_admin_users_v1_admins_post",
+    "group": "Users",
+    "description": "Promote an existing user to an admin. An invitation link will be sent to the specified email address of the user"
+  },
+  {
+    "title": "Create user note",
+    "url": "https://developer.connecteam.com/reference/create_note_users_v1_users__userid__notes_post.md",
+    "slug": "create_note_users_v1_users__userid__notes_post",
+    "group": "Users",
+    "description": "Create new note on the profile of the specified user"
+  },
+  {
+    "title": "Upload a payslip",
+    "url": "https://developer.connecteam.com/reference/create_payslip_users_v1_users__userid__payslips_post.md",
+    "slug": "create_payslip_users_v1_users__userid__payslips_post",
+    "group": "Users",
+    "description": "Upload a payslip for a user for a specified period. The payslip attachment must be uploaded first via the attachments endpoint."
+  },
+  {
+    "title": "Update performance data",
+    "url": "https://developer.connecteam.com/reference/update_performance_users_v1_users__userid__performance__date__put.md",
+    "slug": "update_performance_users_v1_users__userid__performance__date__put",
+    "group": "Users",
+    "description": "Update or add performance data values for a specific user on a given date. If a value already exists for that date, it will be replaced with the new value. If no value exists, the new value will be…"
+  },
+  {
+    "title": "Get indicators",
+    "url": "https://developer.connecteam.com/reference/get_indicators_users_v1_performance_indicators_get.md",
+    "slug": "get_indicators_users_v1_performance_indicators_get",
+    "group": "Users",
+    "description": "Retrieve the metric indicators of the performance data associated with account."
+  },
+  {
+    "title": "Get user assignments",
+    "url": "https://developer.connecteam.com/reference/get_user_assignments_users_v1_users__userid__assignments_get.md",
+    "slug": "get_user_assignments_users_v1_users__userid__assignments_get",
+    "group": "Users",
+    "description": "Retrieve a list of assigned assets of a specified user within the account. The available asset types are defined in the corresponding assetTypes enumeration param."
+  },
+  {
+    "title": "Get onboarding packs",
+    "url": "https://developer.connecteam.com/reference/get_packs_onboarding_v1_packs_get.md",
+    "slug": "get_packs_onboarding_v1_packs_get",
+    "group": "Users Onboarding",
+    "description": "Retrieve all onboarding packs for the company"
+  },
+  {
+    "title": "Get pack assignments",
+    "url": "https://developer.connecteam.com/reference/get_pack_assignments_onboarding_v1_packs__packid__assignments_get.md",
+    "slug": "get_pack_assignments_onboarding_v1_packs__packid__assignments_get",
+    "group": "Users Onboarding",
+    "description": "Retrieve all user assignments for a specific onboarding pack"
+  },
+  {
+    "title": "Assign users to pack",
+    "url": "https://developer.connecteam.com/reference/create_pack_assignments_onboarding_v1_packs__packid__assignments_post.md",
+    "slug": "create_pack_assignments_onboarding_v1_packs__packid__assignments_post",
+    "group": "Users Onboarding",
+    "description": "Assign one or more users to a specific onboarding pack. All-or-nothing: if any user ID is invalid, no assignments are created."
+  },
+  {
+    "title": "Get scheduling rule policies",
+    "url": "https://developer.connecteam.com/reference/get_scheduling_rule_policies_company_policies_v1_scheduling_rule_policies_get.md",
+    "slug": "get_scheduling_rule_policies_company_policies_v1_scheduling_rule_policies_get",
+    "group": "Company Policies",
+    "description": "Retrieve a list of scheduling rule policies associated with the account"
+  },
+  {
+    "title": "Get user scheduling rule policies",
+    "url": "https://developer.connecteam.com/reference/get_user_scheduling_rule_policies_company_policies_v1_users__userid__scheduling_rule_policies_get.md",
+    "slug": "get_user_scheduling_rule_policies_company_policies_v1_users__userid__scheduling_rule_policies_get",
+    "group": "Company Policies",
+    "description": "Retrieve the scheduling rule policies assigned to a user, including employee-profile custom rules"
+  },
+  {
+    "title": "List scheduling rule policy assignments",
+    "url": "https://developer.connecteam.com/reference/list_assignments_company_policies_v1_scheduling_rule_policies__schedulingrulepolicyid__assignments_get.md",
+    "slug": "list_assignments_company_policies_v1_scheduling_rule_policies__schedulingrulepolicyid__assignments_get",
+    "group": "Company Policies",
+    "description": "Retrieve all assignments for a specific scheduling rule policy"
+  },
+  {
+    "title": "Delete scheduling rule policy",
+    "url": "https://developer.connecteam.com/reference/delete_scheduling_rule_policy_company_policies_v1_scheduling_rule_policies__schedulingrulepolicyid__delete.md",
+    "slug": "delete_scheduling_rule_policy_company_policies_v1_scheduling_rule_policies__schedulingrulepolicyid__delete",
+    "group": "Company Policies",
+    "description": "Delete a scheduling rule policy and all its assignments"
+  },
+  {
+    "title": "Assign users to scheduling rule policy",
+    "url": "https://developer.connecteam.com/reference/assign_users_to_policy_company_policies_v1_scheduling_rule_policies__schedulingrulepolicyid__assignments_put.md",
+    "slug": "assign_users_to_policy_company_policies_v1_scheduling_rule_policies__schedulingrulepolicyid__assignments_put",
+    "group": "Company Policies",
+    "description": "Assign one or more users to the specified scheduling rule policy. Pass the users in the userIds array. If a user is already assigned to another scheduling rule policy, that assignment is replaced."
+  },
+  {
+    "title": "Get working hours policies",
+    "url": "https://developer.connecteam.com/reference/get_working_hours_policies_company_policies_v1_working_hours_policies_get.md",
+    "slug": "get_working_hours_policies_company_policies_v1_working_hours_policies_get",
+    "group": "Company Policies",
+    "description": "Retrieve shared working hours policies for the account, including disabled policies"
+  },
+  {
+    "title": "Get user working hours",
+    "url": "https://developer.connecteam.com/reference/get_user_working_hours_company_policies_v1_users__userid__working_hours_get.md",
+    "slug": "get_user_working_hours_company_policies_v1_users__userid__working_hours_get",
+    "group": "Company Policies",
+    "description": "Retrieve the working hours assigned to a user. Returns an empty object when the user has no working hours"
+  },
+  {
+    "title": "Assign users to working hours policy",
+    "url": "https://developer.connecteam.com/reference/assign_users_to_policy_company_policies_v1_working_hours_policies__workinghourspolicyid__assignments_put.md",
+    "slug": "assign_users_to_policy_company_policies_v1_working_hours_policies__workinghourspolicyid__assignments_put",
+    "group": "Company Policies",
+    "description": "Assign users to the specified working hours policy. Replaces custom working hours for those users"
+  },
+  {
+    "title": "Set user custom working hours",
+    "url": "https://developer.connecteam.com/reference/set_user_custom_working_hours_company_policies_v1_users__userid__working_hours_put.md",
+    "slug": "set_user_custom_working_hours_company_policies_v1_users__userid__working_hours_put",
+    "group": "Company Policies",
+    "description": "Create or replace custom working hours for a user. Any shared working hours assignment is replaced"
+  },
+  {
+    "title": "Delete user custom working hours",
+    "url": "https://developer.connecteam.com/reference/delete_user_custom_working_hours_company_policies_v1_users__userid__working_hours_delete.md",
+    "slug": "delete_user_custom_working_hours_company_policies_v1_users__userid__working_hours_delete",
+    "group": "Company Policies",
+    "description": "Remove custom working hours for a user. A shared working hours assignment is kept"
+  },
+  {
+    "title": "Unassign user from working hours policy",
+    "url": "https://developer.connecteam.com/reference/unassign_user_from_policy_company_policies_v1_working_hours_policies__workinghourspolicyid__assignments__userid__delete.md",
+    "slug": "unassign_user_from_policy_company_policies_v1_working_hours_policies__workinghourspolicyid__assignments__userid__delete",
+    "group": "Company Policies",
+    "description": "Remove a user's assignment to this working hours policy. Custom working hours are kept"
+  },
+  {
+    "title": "List pay rule policy assignments",
+    "url": "https://developer.connecteam.com/reference/list_assignments_company_policies_v1_pay_rule_policies__payrulepolicyid__assignments_get.md",
+    "slug": "list_assignments_company_policies_v1_pay_rule_policies__payrulepolicyid__assignments_get",
+    "group": "Company Policies",
+    "description": "Retrieve all assignments for a specific pay rule policy that are in effect on the given date"
+  },
+  {
+    "title": "Get company pay rules",
+    "url": "https://developer.connecteam.com/reference/get_pay_rules_company_policies_v1_pay_rules_get.md",
+    "slug": "get_pay_rules_company_policies_v1_pay_rules_get",
+    "group": "Company Policies",
+    "description": "Retrieve a list of pay rules associated with the account."
+  },
+  {
+    "title": "Get company pay rule policies",
+    "url": "https://developer.connecteam.com/reference/get_pay_rule_policies_company_policies_v1_pay_rule_policies_get.md",
+    "slug": "get_pay_rule_policies_company_policies_v1_pay_rule_policies_get",
+    "group": "Company Policies",
+    "description": "Retrieve a list of policies associated with the account. Currently supports pay rule policies."
+  },
+  {
+    "title": "Add pay rule to pay rule policy",
+    "url": "https://developer.connecteam.com/reference/add_pay_rule_to_policy_company_policies_v1_pay_rule_policies__payrulepolicyid__pay_rules__payruleid__put.md",
+    "slug": "add_pay_rule_to_policy_company_policies_v1_pay_rule_policies__payrulepolicyid__pay_rules__payruleid__put",
+    "group": "Company Policies",
+    "description": "Add an existing pay rule to the specified pay rule policy. Adding a regular pay rule replaces the policy's current regular pay rule. Adding a pay rule the policy already contains succeeds unchanged."
+  },
+  {
+    "title": "Assign user to pay rule policy",
+    "url": "https://developer.connecteam.com/reference/assign_user_to_policy_company_policies_v1_pay_rule_policies__payrulepolicyid__assignments_put.md",
+    "slug": "assign_user_to_policy_company_policies_v1_pay_rule_policies__payrulepolicyid__assignments_put",
+    "group": "Company Policies",
+    "description": "Assign user to specified pay rule policy. If the provided effective date is earlier than the currently assigned policy's effective date, the existing policy assignment will be replaced and removed."
+  },
+  {
+    "title": "Remove pay rule policy assignment",
+    "url": "https://developer.connecteam.com/reference/delete_assignment_company_policies_v1_pay_rule_policies__payrulepolicyid__assignments__assignmentid__delete.md",
+    "slug": "delete_assignment_company_policies_v1_pay_rule_policies__payrulepolicyid__assignments__assignmentid__delete",
+    "group": "Company Policies",
+    "description": "Remove a specific assignment from a pay rule policy"
+  },
+  {
+    "title": "Remove pay rule from pay rule policy",
+    "url": "https://developer.connecteam.com/reference/remove_pay_rule_from_policy_company_policies_v1_pay_rule_policies__payrulepolicyid__pay_rules__payruleid__delete.md",
+    "slug": "remove_pay_rule_from_policy_company_policies_v1_pay_rule_policies__payrulepolicyid__pay_rules__payruleid__delete",
+    "group": "Company Policies",
+    "description": "Remove a pay rule from the specified pay rule policy. The policy itself and its user assignments are never deleted by this operation."
+  },
+  {
+    "title": "Get asset metadata",
+    "url": "https://developer.connecteam.com/reference/get_metadata_per_asset_assets_v1_asset__assetid__get.md",
+    "slug": "get_metadata_per_asset_assets_v1_asset__assetid__get",
+    "group": "Assets",
+    "description": "Retrieve all metadata associated with a specified asset."
+  },
+  {
+    "title": "Get daily sales",
+    "url": "https://developer.connecteam.com/reference/get_daily_sales_sales_v1_daily_sales_get.md",
+    "slug": "get_daily_sales_sales_v1_daily_sales_get",
+    "group": "SALES DATA",
+    "description": "Retrieve daily sales totals per location for a date range. Each entry includes totalSales (aggregated from transactions) and projectedSales (set via Set projected sales). Required query parameters:…"
+  },
+  {
+    "title": "Get locations",
+    "url": "https://developer.connecteam.com/reference/get_locations_sales_v1_locations_get.md",
+    "slug": "get_locations_sales_v1_locations_get",
+    "group": "SALES DATA",
+    "description": "Retrieve a list of locations associated with the account"
+  },
+  {
+    "title": "Create transactions",
+    "url": "https://developer.connecteam.com/reference/create_transactions_sales_v1_transactions_post.md",
+    "slug": "create_transactions_sales_v1_transactions_post",
+    "group": "SALES DATA",
+    "description": "Create new sale transactions for specified locations."
+  },
+  {
+    "title": "Create location",
+    "url": "https://developer.connecteam.com/reference/create_location_sales_v1_locations_post.md",
+    "slug": "create_location_sales_v1_locations_post",
+    "group": "SALES DATA",
+    "description": "Create a new location entity, which can be used to sync sales data with third-party systems. Location can represent a physical branch, store or facility."
+  },
+  {
+    "title": "Set projected sales",
+    "url": "https://developer.connecteam.com/reference/update_projected_sales_sales_v1_locations__locationid__daily_sales_put.md",
+    "slug": "update_projected_sales_sales_v1_locations__locationid__daily_sales_put",
+    "group": "SALES DATA",
+    "description": "Set projected sales for a single location for one or more days in a single request. Each item in updates specifies a date and projectedSales value; each date may appear only once. This replaces the…"
+  },
+  {
+    "title": "Delete transaction",
+    "url": "https://developer.connecteam.com/reference/delete_transaction_sales_v1_transactions__transactionid__delete.md",
+    "slug": "delete_transaction_sales_v1_transactions__transactionid__delete",
+    "group": "SALES DATA",
+    "description": "Delete single transaction by its ID"
+  },
+  {
+    "title": "Delete transactions",
+    "url": "https://developer.connecteam.com/reference/delete_transactions_by_period_sales_v1_transactions_delete.md",
+    "slug": "delete_transactions_by_period_sales_v1_transactions_delete",
+    "group": "SALES DATA",
+    "description": "Delete transactions within a specified time period. All transactions during this period will be permanently removed."
+  },
+  {
+    "title": "Generate upload url",
+    "url": "https://developer.connecteam.com/reference/generate_upload_url_attachments_v1_files_generate_upload_url_post.md",
+    "slug": "generate_upload_url_attachments_v1_files_generate_upload_url_post",
+    "group": "Attachments",
+    "description": "Generates a pre-signed URL that can be used to securely upload an attachment to the cloud. The pre-signed URL ensures temporary access for the upload (300 seconds), and it will be associated with a…"
+  },
+  {
+    "title": "Finalize upload",
+    "url": "https://developer.connecteam.com/reference/finalize_upload_attachments_v1_files_complete_upload__fileid__put.md",
+    "slug": "finalize_upload_attachments_v1_files_complete_upload__fileid__put",
+    "group": "Attachments",
+    "description": "Finalizes the upload process for the attachment identified by the fileId. It confirms and registers the uploaded file, ensuring it is properly associated with the relevant feature."
+  },
+  {
+    "title": "Get file metadata",
+    "url": "https://developer.connecteam.com/reference/get_file_url_attachments_v1_files__fileid__get.md",
+    "slug": "get_file_url_attachments_v1_files__fileid__get",
+    "group": "Attachments",
+    "description": "Retrieve detailed information about a previously uploaded attachment identified by the fileId. The response includes its metadata, and the status of the upload process."
+  },
+  {
+    "title": "Generate download URL",
+    "url": "https://developer.connecteam.com/reference/generate_download_url_attachments_v1_files_download_url_post.md",
+    "slug": "generate_download_url_attachments_v1_files_download_url_post",
+    "group": "Attachments",
+    "description": "Generates a time limited URL for downloading a file."
+  },
+  {
+    "title": "Get task boards",
+    "url": "https://developer.connecteam.com/reference/get_tasks_boards_tasks_v1_taskboards_get.md",
+    "slug": "get_tasks_boards_tasks_v1_taskboards_get",
+    "group": "TASKS",
+    "description": "Retrieve a list of task boards associated with the account"
+  },
+  {
+    "title": "Get task labels",
+    "url": "https://developer.connecteam.com/reference/get_task_labels_tasks_v1_taskboards__taskboardid__labels_get.md",
+    "slug": "get_task_labels_tasks_v1_taskboards__taskboardid__labels_get",
+    "group": "TASKS",
+    "description": "Retrieve a list of task labels associated with the account"
+  },
+  {
+    "title": "Update task",
+    "url": "https://developer.connecteam.com/reference/update_task_tasks_v1_taskboards__taskboardid__tasks__taskid__put.md",
+    "slug": "update_task_tasks_v1_taskboards__taskboardid__tasks__taskid__put",
+    "group": "TASKS",
+    "description": "Update a quick task under a specified task board. Any new attachments will replace the existing ones."
+  },
+  {
+    "title": "Delete task",
+    "url": "https://developer.connecteam.com/reference/delete_task_tasks_v1_taskboards__taskboardid__tasks__taskid__delete.md",
+    "slug": "delete_task_tasks_v1_taskboards__taskboardid__tasks__taskid__delete",
+    "group": "TASKS",
+    "description": "Delete quick task under a specified task board"
+  },
+  {
+    "title": "Get tasks",
+    "url": "https://developer.connecteam.com/reference/get_tasks_tasks_v1_taskboards__taskboardid__tasks_get.md",
+    "slug": "get_tasks_tasks_v1_taskboards__taskboardid__tasks_get",
+    "group": "TASKS",
+    "description": "Retrieves a list of tasks under a specified task board"
+  },
+  {
+    "title": "Create task",
+    "url": "https://developer.connecteam.com/reference/create_task_tasks_v1_taskboards__taskboardid__tasks_post.md",
+    "slug": "create_task_tasks_v1_taskboards__taskboardid__tasks_post",
+    "group": "TASKS",
+    "description": "Create quick task for specified users by their ID, detailing information such as title, due date and description. Attachments for the quick task must first be uploaded via the attachments endpoint."
+  },
+  {
+    "title": "Create sub-task",
+    "url": "https://developer.connecteam.com/reference/create_subtask_tasks_v1_taskboards__taskboardid__tasks__taskid__sub_tasks_post.md",
+    "slug": "create_subtask_tasks_v1_taskboards__taskboardid__tasks__taskid__sub_tasks_post",
+    "group": "TASKS",
+    "description": "Create a single sub-task under a specified parent task"
+  },
+  {
+    "title": "Get sub-tasks",
+    "url": "https://developer.connecteam.com/reference/get_subtasks_tasks_v1_taskboards__taskboardid__tasks__taskid__sub_tasks_get.md",
+    "slug": "get_subtasks_tasks_v1_taskboards__taskboardid__tasks__taskid__sub_tasks_get",
+    "group": "TASKS",
+    "description": "Retrieve a list of sub-tasks under a specified parent task"
+  },
+  {
+    "title": "Update sub-task",
+    "url": "https://developer.connecteam.com/reference/update_subtask_tasks_v1_taskboards__taskboardid__tasks__taskid__sub_tasks__subtaskid__put.md",
+    "slug": "update_subtask_tasks_v1_taskboards__taskboardid__tasks__taskid__sub_tasks__subtaskid__put",
+    "group": "TASKS",
+    "description": "Update a single sub-task under a specified parent task"
+  },
+  {
+    "title": "Delete sub-task",
+    "url": "https://developer.connecteam.com/reference/delete_subtask_tasks_v1_taskboards__taskboardid__tasks__taskid__sub_tasks__subtaskid__delete.md",
+    "slug": "delete_subtask_tasks_v1_taskboards__taskboardid__tasks__taskid__sub_tasks__subtaskid__delete",
+    "group": "TASKS",
+    "description": "Delete a single sub-task under a specified parent task"
+  },
+  {
+    "title": "Get publishers",
+    "url": "https://developer.connecteam.com/reference/get_publishers_publishers_v1_publishers_get.md",
+    "slug": "get_publishers_publishers_v1_publishers_get",
+    "group": "Custom Publishers",
+    "description": "Retrieves a list of custom publishers associated with the account."
+  },
+  {
+    "title": "Get conversations",
+    "url": "https://developer.connecteam.com/reference/get_conversations_chat_v1_conversations_get.md",
+    "slug": "get_conversations_chat_v1_conversations_get",
+    "group": "Chat",
+    "description": "Retrieves a list of team chats and/or channels associated with the account. The list excludes private conversations."
+  },
+  {
+    "title": "Create conversation",
+    "url": "https://developer.connecteam.com/reference/create_conversation_chat_v1_conversations_post.md",
+    "slug": "create_conversation_chat_v1_conversations_post",
+    "group": "Chat",
+    "description": "Creates a team chat or channel as the authenticated user. Members are assigned via userIds (individual users) and/or smartGroupIds (dynamic cohorts) - at least one assignment is required. Use type:…"
+  },
+  {
+    "title": "Send message",
+    "url": "https://developer.connecteam.com/reference/send_message_to_conversation_chat_v1_conversations__conversationid__message_post.md",
+    "slug": "send_message_to_conversation_chat_v1_conversations__conversationid__message_post",
+    "group": "Chat",
+    "description": "Sends a new message to a specific chat, whether it’s channel or a team chat"
+  },
+  {
+    "title": "Send private message",
+    "url": "https://developer.connecteam.com/reference/send_message_to_private_conversation_chat_v1_conversations_privatemessage__userid__post.md",
+    "slug": "send_message_to_private_conversation_chat_v1_conversations_privatemessage__userid__post",
+    "group": "Chat",
+    "description": "Send a private message to a specified user within the account. The sender will be a custom publisher. If a conversation between the custom publisher and the addressed user already exists, it will…"
+  },
+  {
+    "title": "Get jobs",
+    "url": "https://developer.connecteam.com/reference/get_jobs_jobs_v1_jobs_get.md",
+    "slug": "get_jobs_jobs_v1_jobs_get",
+    "group": "Jobs",
+    "description": "Get a list of job objects relevant to instance id (scheduler id or time clock id). If unified jobs are disabled, only schedulers are supported"
+  },
+  {
+    "title": "Get job",
+    "url": "https://developer.connecteam.com/reference/get_job_jobs_v1_jobs__jobid__get.md",
+    "slug": "get_job_jobs_v1_jobs__jobid__get",
+    "group": "Jobs",
+    "description": "Retrieve a single job information by its unique ID"
+  },
+  {
+    "title": "Create jobs",
+    "url": "https://developer.connecteam.com/reference/create_jobs_jobs_v1_jobs_post.md",
+    "slug": "create_jobs_jobs_v1_jobs_post",
+    "group": "Jobs",
+    "description": "Create individual or multiple jobs under a specified scheduler"
+  },
+  {
+    "title": "Update job",
+    "url": "https://developer.connecteam.com/reference/update_job_jobs_v1_jobs__jobid__put.md",
+    "slug": "update_job_jobs_v1_jobs__jobid__put",
+    "group": "Jobs",
+    "description": "Update a single job by its unique identifier. Currently, updating job with nested sub-jobs is not supported."
+  },
+  {
+    "title": "Delete job",
+    "url": "https://developer.connecteam.com/reference/delete_job_jobs_v1_jobs__jobid__delete.md",
+    "slug": "delete_job_jobs_v1_jobs__jobid__delete",
+    "group": "Jobs",
+    "description": "Delete a single job by its unique identifier.         Currently, deleting a sub-job and/or job with nested sub-jobs is not supported."
+  },
+  {
+    "title": "Get resource custom fields",
+    "url": "https://developer.connecteam.com/reference/get_resource_custom_fields_jobs_v1_custom_fields_get.md",
+    "slug": "get_resource_custom_fields_jobs_v1_custom_fields_get",
+    "group": "Jobs",
+    "description": "Retrieves all resource custom fields associated with the account. Optionally, filter the results by custom field IDs, names, or types."
+  },
+  {
+    "title": "Get schedulers",
+    "url": "https://developer.connecteam.com/reference/get_schedulers_scheduler_v1_schedulers_get.md",
+    "slug": "get_schedulers_scheduler_v1_schedulers_get",
+    "group": "Job scheduling",
+    "description": "Retrieve a list of schedulers associated with the account"
+  },
+  {
+    "title": "Get user unavailabilities",
+    "url": "https://developer.connecteam.com/reference/get_unavailabilities_scheduler_v1_schedulers_user_unavailability_get.md",
+    "slug": "get_unavailabilities_scheduler_v1_schedulers_user_unavailability_get",
+    "group": "Job scheduling",
+    "description": "Retrieve a list of user unavailabilities, approved time-off requests and assigned shifts"
+  },
+  {
+    "title": "Get shifts",
+    "url": "https://developer.connecteam.com/reference/get_shifts_scheduler_v1_schedulers__schedulerid__shifts_get.md",
+    "slug": "get_shifts_scheduler_v1_schedulers__schedulerid__shifts_get",
+    "group": "Job scheduling",
+    "description": "Retrieve a list of shifts under a specific schedule"
+  },
+  {
+    "title": "Get shift",
+    "url": "https://developer.connecteam.com/reference/get_shift_by_id_scheduler_v1_schedulers__schedulerid__shifts__shiftid__get.md",
+    "slug": "get_shift_by_id_scheduler_v1_schedulers__schedulerid__shifts__shiftid__get",
+    "group": "Job scheduling",
+    "description": "Retrieve single shift information by its unique ID"
+  },
+  {
+    "title": "Delete shifts",
+    "url": "https://developer.connecteam.com/reference/delete_shifts_by_ids_scheduler_v1_schedulers__schedulerid__shifts_delete.md",
+    "slug": "delete_shifts_by_ids_scheduler_v1_schedulers__schedulerid__shifts_delete",
+    "group": "Job scheduling",
+    "description": "Delete single or multiple shifts in a specified schedule"
+  },
+  {
+    "title": "Create shifts",
+    "url": "https://developer.connecteam.com/reference/create_shifts_scheduler_v1_schedulers__schedulerid__shifts_post.md",
+    "slug": "create_shifts_scheduler_v1_schedulers__schedulerid__shifts_post",
+    "group": "Job scheduling",
+    "description": "Create single or multiple shifts under a specific schedule"
+  },
+  {
+    "title": "Update shifts",
+    "url": "https://developer.connecteam.com/reference/update_shifts_scheduler_v1_schedulers__schedulerid__shifts_put.md",
+    "slug": "update_shifts_scheduler_v1_schedulers__schedulerid__shifts_put",
+    "group": "Job scheduling",
+    "description": "Update single or multiple shifts under a specific schedule"
+  },
+  {
+    "title": "Delete shift",
+    "url": "https://developer.connecteam.com/reference/delete_shift_by_id_scheduler_v1_schedulers__schedulerid__shifts__shiftid__delete.md",
+    "slug": "delete_shift_by_id_scheduler_v1_schedulers__schedulerid__shifts__shiftid__delete",
+    "group": "Job scheduling",
+    "description": "Delete a single shift by its unique ID"
+  },
+  {
+    "title": "Get user unavailabilities",
+    "url": "https://developer.connecteam.com/reference/get_unavailabilities_scheduler_v2_schedulers_user_unavailability_get.md",
+    "slug": "get_unavailabilities_scheduler_v2_schedulers_user_unavailability_get",
+    "group": "Job scheduling",
+    "description": "Retrieve a list of user unavailabilities, approved time-off requests and assigned shifts"
+  },
+  {
+    "title": "Get auto-assign status",
+    "url": "https://developer.connecteam.com/reference/get_autofill_status_scheduler_v2_schedulers__schedulerid__shifts_auto_assign__autoassignrequestid__get.md",
+    "slug": "get_autofill_status_scheduler_v2_schedulers__schedulerid__shifts_auto_assign__autoassignrequestid__get",
+    "group": "Job scheduling",
+    "description": "Retrieve the status of an auto-assign request using its unique request ID. The response categorizes the results into 'scheduled shifts' for successfully assigned shifts and 'unscheduled shifts' for…"
+  },
+  {
+    "title": "Get shifts",
+    "url": "https://developer.connecteam.com/reference/get_shifts_scheduler_v2_schedulers__schedulerid__shifts_get.md",
+    "slug": "get_shifts_scheduler_v2_schedulers__schedulerid__shifts_get",
+    "group": "Job scheduling",
+    "description": "Retrieve a list of shifts under a specific schedule"
+  },
+  {
+    "title": "Get shift",
+    "url": "https://developer.connecteam.com/reference/get_shift_by_id_scheduler_v2_schedulers__schedulerid__shifts__shiftid__get.md",
+    "slug": "get_shift_by_id_scheduler_v2_schedulers__schedulerid__shifts__shiftid__get",
+    "group": "Job scheduling",
+    "description": "Retrieve single shift information by its unique ID"
+  },
+  {
+    "title": "Create auto-assign request",
+    "url": "https://developer.connecteam.com/reference/create_autofill_request_scheduler_v2_schedulers__schedulerid__shifts_auto_assign_post.md",
+    "slug": "create_autofill_request_scheduler_v2_schedulers__schedulerid__shifts_auto_assign_post",
+    "group": "Job scheduling",
+    "description": "Initiate a request to auto-assign shifts by their IDs. If multiple IDs are provided, all corresponding shifts must occur within the same work week (e.g., Monday to Sunday). This endpoint only submits…"
+  },
+  {
+    "title": "Create shifts",
+    "url": "https://developer.connecteam.com/reference/create_shifts_scheduler_v2_schedulers__schedulerid__shifts_post.md",
+    "slug": "create_shifts_scheduler_v2_schedulers__schedulerid__shifts_post",
+    "group": "Job scheduling",
+    "description": "Create single or multiple shifts under a specific schedule"
+  },
+  {
+    "title": "Update shifts",
+    "url": "https://developer.connecteam.com/reference/update_shifts_scheduler_v2_schedulers__schedulerid__shifts_put.md",
+    "slug": "update_shifts_scheduler_v2_schedulers__schedulerid__shifts_put",
+    "group": "Job scheduling",
+    "description": "Update single or multiple shifts under a specific schedule"
+  },
+  {
+    "title": "Delete shifts",
+    "url": "https://developer.connecteam.com/reference/delete_shifts_by_ids_scheduler_v2_schedulers__schedulerid__shifts_delete.md",
+    "slug": "delete_shifts_by_ids_scheduler_v2_schedulers__schedulerid__shifts_delete",
+    "group": "Job scheduling",
+    "description": "Delete single or multiple shifts in a specified schedule"
+  },
+  {
+    "title": "Delete shift",
+    "url": "https://developer.connecteam.com/reference/delete_shift_by_id_scheduler_v2_schedulers__schedulerid__shifts__shiftid__delete.md",
+    "slug": "delete_shift_by_id_scheduler_v2_schedulers__schedulerid__shifts__shiftid__delete",
+    "group": "Job scheduling",
+    "description": "Delete a single shift by its unique ID"
+  },
+  {
+    "title": "Get shift custom fields",
+    "url": "https://developer.connecteam.com/reference/get_shift_custom_fields_scheduler_v1_schedulers__schedulerid__custom_fields_get.md",
+    "slug": "get_shift_custom_fields_scheduler_v1_schedulers__schedulerid__custom_fields_get",
+    "group": "Job scheduling",
+    "description": "Retrieves all shift custom fields associated with the scheduler"
+  },
+  {
+    "title": "Create schedule unavailability",
+    "url": "https://developer.connecteam.com/reference/create_scheduler_unavailability_scheduler_v1_schedulers__schedulerid__unavailability_post.md",
+    "slug": "create_scheduler_unavailability_scheduler_v1_schedulers__schedulerid__unavailability_post",
+    "group": "Job scheduling",
+    "description": "Create a single unavailability in the specified schedule for a designated user on a given date. The unavailability can be set for the entire day or for a specific part of it. Repeating…"
+  },
+  {
+    "title": "Get schedule unavailabilities",
+    "url": "https://developer.connecteam.com/reference/get_unavailabilities_scheduler_v1_schedulers__schedulerid__unavailabilities_get.md",
+    "slug": "get_unavailabilities_scheduler_v1_schedulers__schedulerid__unavailabilities_get",
+    "group": "Job scheduling",
+    "description": "Retrieve a list of unavailabilities under a specific schedule filtered by date range. The response is paginated and can be filtered by user ID."
+  },
+  {
+    "title": "Delete schedule unavailability",
+    "url": "https://developer.connecteam.com/reference/delete_scheduler_unavailability_scheduler_v1_schedulers__schedulerid__unavailability__unavailabilityid__delete.md",
+    "slug": "delete_scheduler_unavailability_scheduler_v1_schedulers__schedulerid__unavailability__unavailabilityid__delete",
+    "group": "Job scheduling",
+    "description": "Delete existing unavailability by its unavailability ID"
+  },
+  {
+    "title": "Create auto-assign request",
+    "url": "https://developer.connecteam.com/reference/create_autofill_request_scheduler_v1_schedulers__schedulerid__shifts_auto_assign_post.md",
+    "slug": "create_autofill_request_scheduler_v1_schedulers__schedulerid__shifts_auto_assign_post",
+    "group": "Job scheduling",
+    "description": "Initiate a request to auto-assign shifts by their IDs. If multiple IDs are provided, all corresponding shifts must occur within the same work week (e.g., Monday to Sunday). This endpoint only submits…"
+  },
+  {
+    "title": "Get auto-assign status",
+    "url": "https://developer.connecteam.com/reference/get_autofill_status_scheduler_v1_schedulers__schedulerid__shifts_auto_assign__autoassignrequestid__get.md",
+    "slug": "get_autofill_status_scheduler_v1_schedulers__schedulerid__shifts_auto_assign__autoassignrequestid__get",
+    "group": "Job scheduling",
+    "description": "Retrieve the status of an auto-assign request using its unique request ID. The response categorizes the results into 'scheduled shifts' for successfully assigned shifts and 'unscheduled shifts' for…"
+  },
+  {
+    "title": "Get shift layers",
+    "url": "https://developer.connecteam.com/reference/get_shift_layers_scheduler_v1_schedulers__schedulerid__shift_layers_get.md",
+    "slug": "get_shift_layers_scheduler_v1_schedulers__schedulerid__shift_layers_get",
+    "group": "Job scheduling",
+    "description": "Retrieve a list of shift layers under a specified schedule"
+  },
+  {
+    "title": "Get shift layer values",
+    "url": "https://developer.connecteam.com/reference/get_shift_layer_values_scheduler_v1_schedulers__schedulerid__shift_layers__layerid__values_get.md",
+    "slug": "get_shift_layer_values_scheduler_v1_schedulers__schedulerid__shift_layers__layerid__values_get",
+    "group": "Job scheduling",
+    "description": "Retrieve the possible values of a shift layer"
+  },
+  {
+    "title": "Get note",
+    "url": "https://developer.connecteam.com/reference/get_note_daily_info_v1_daily_note__noteid__get.md",
+    "slug": "get_note_daily_info_v1_daily_note__noteid__get",
+    "group": "Job scheduling",
+    "description": "Get a single note by its unique identifier"
+  },
+  {
+    "title": "Create daily note",
+    "url": "https://developer.connecteam.com/reference/create_note_daily_info_v1_daily_notes_post.md",
+    "slug": "create_note_daily_info_v1_daily_notes_post",
+    "group": "Job scheduling",
+    "description": "Create a note under a specified schedule for a specific date"
+  },
+  {
+    "title": "Update note",
+    "url": "https://developer.connecteam.com/reference/update_note_daily_info_v1_daily_note__noteid__put.md",
+    "slug": "update_note_daily_info_v1_daily_note__noteid__put",
+    "group": "Job scheduling",
+    "description": "Update a single note by its unique identifier"
+  },
+  {
+    "title": "Delete note",
+    "url": "https://developer.connecteam.com/reference/delete_note_daily_info_v1_daily_note__noteid__delete.md",
+    "slug": "delete_note_daily_info_v1_daily_note__noteid__delete",
+    "group": "Job scheduling",
+    "description": "Delete a single note by its unique identifier"
+  },
+  {
+    "title": "Set pay rates",
+    "url": "https://developer.connecteam.com/reference/set_pay_rates_pay_rates_v1_pay_rates_put.md",
+    "slug": "set_pay_rates_pay_rates_v1_pay_rates_put",
+    "group": "PAY RATES",
+    "description": "Creates or updates pay rates for one or more users. If a pay rate exists for the same effective date, it is replaced; otherwise, a new entry is added to the pay rate history. The effective date…"
+  },
+  {
+    "title": "Get pay rates",
+    "url": "https://developer.connecteam.com/reference/get_pay_rates_pay_rates_v1_pay_rates_get.md",
+    "slug": "get_pay_rates_pay_rates_v1_pay_rates_get",
+    "group": "PAY RATES",
+    "description": "Retrieves pay rate information for one or more users within your organization. This endpoint supports flexible filtering by effective dates, rate types, and resource assignments. It's designed for…"
+  },
+  {
+    "title": "Delete pay rate",
+    "url": "https://developer.connecteam.com/reference/delete_pay_rate_pay_rates_v1_pay_rates_users__userid___effectivedate__delete.md",
+    "slug": "delete_pay_rate_pay_rates_v1_pay_rates_users__userid___effectivedate__delete",
+    "group": "PAY RATES",
+    "description": "Deletes a specific pay rate entry for a user. The pay rate is identified by the user ID and effective date. This operation cannot be undone. The system validates that the effective date does not…"
+  },
+  {
+    "title": "Get timesheet totals",
+    "url": "https://developer.connecteam.com/reference/get_timesheet_total_hours_time_clock_v1_time_clocks__timeclockid__timesheet_get.md",
+    "slug": "get_timesheet_total_hours_time_clock_v1_time_clocks__timeclockid__timesheet_get",
+    "group": "time clock",
+    "description": "Retrieves detailed work records for each employee within a specified date range. This endpoint is designed to support payroll processing by providing total worked hours, categorized by pay rules and…"
+  },
+  {
+    "title": "Get time clocks",
+    "url": "https://developer.connecteam.com/reference/get_time_clocks_time_clock_v1_time_clocks_get.md",
+    "slug": "get_time_clocks_time_clock_v1_time_clocks_get",
+    "group": "time clock",
+    "description": "Retrieve a list of time clocks associated with the account"
+  },
+  {
+    "title": "Get time activities",
+    "url": "https://developer.connecteam.com/reference/get_time_activities_time_clock_v1_time_clocks__timeclockid__time_activities_get.md",
+    "slug": "get_time_activities_time_clock_v1_time_clocks__timeclockid__time_activities_get",
+    "group": "time clock",
+    "description": "Retrieve a list of time activities in under a specified time clock. Time activities include shift and/or manual breaks"
+  },
+  {
+    "title": "Get shift attachments",
+    "url": "https://developer.connecteam.com/reference/get_shift_attachments_time_clock_v1_time_clocks__timeclockid__shift_attachments_get.md",
+    "slug": "get_shift_attachments_time_clock_v1_time_clocks__timeclockid__shift_attachments_get",
+    "group": "time clock",
+    "description": "Get shift attachments of a time clock"
+  },
+  {
+    "title": "Get manual breaks",
+    "url": "https://developer.connecteam.com/reference/get_manual_breaks_time_clock_v1_time_clocks__timeclockid__manual_breaks_get.md",
+    "slug": "get_manual_breaks_time_clock_v1_time_clocks__timeclockid__manual_breaks_get",
+    "group": "time clock",
+    "description": "Get multiple manual breaks of a time clock"
+  },
+  {
+    "title": "Clock in",
+    "url": "https://developer.connecteam.com/reference/clock_user_in_time_clock_v1_time_clocks__timeclockid__clock_in_post.md",
+    "slug": "clock_user_in_time_clock_v1_time_clocks__timeclockid__clock_in_post",
+    "group": "time clock",
+    "description": "Record the start time for the work period of an employee. The start time is automatically captured when the call is executed."
+  },
+  {
+    "title": "Clock out",
+    "url": "https://developer.connecteam.com/reference/clock_user_out_time_clock_v1_time_clocks__timeclockid__clock_out_post.md",
+    "slug": "clock_user_out_time_clock_v1_time_clocks__timeclockid__clock_out_post",
+    "group": "time clock",
+    "description": "Record the end time for the work period of an employee. The end time is automatically captured when the call is executed. The clock-out will be associated with the current open shift."
+  },
+  {
+    "title": "Update time activities",
+    "url": "https://developer.connecteam.com/reference/update_time_activities_time_clock_v1_time_clocks__timeclockid__time_activities_put.md",
+    "slug": "update_time_activities_time_clock_v1_time_clocks__timeclockid__time_activities_put",
+    "group": "time clock",
+    "description": "Update time activities for users assigned to a specific time clock. Time activities can include adjustments to shifts and/or manual breaks."
+  },
+  {
+    "title": "Create time activities",
+    "url": "https://developer.connecteam.com/reference/create_time_activities_time_clock_v1_time_clocks__timeclockid__time_activities_post.md",
+    "slug": "create_time_activities_time_clock_v1_time_clocks__timeclockid__time_activities_post",
+    "group": "time clock",
+    "description": "Create multiple time activities in a time clock"
+  },
+  {
+    "title": "Update user lock days",
+    "url": "https://developer.connecteam.com/reference/update_user_lock_days_time_clock_v1_time_clocks__timeclockid__users__userid__lock_days_put.md",
+    "slug": "update_user_lock_days_time_clock_v1_time_clocks__timeclockid__users__userid__lock_days_put",
+    "group": "time clock",
+    "description": "Locks or unlocks one or more calendar days for a specific user on a given Time Clock. The isLocked boolean on the request body selects the operation: true (the default) prevents subsequent…"
+  },
+  {
+    "title": "Delete time activity",
+    "url": "https://developer.connecteam.com/reference/delete_time_activity_time_clock_v1_time_clocks__timeclockid__time_activities__timeactivityid__delete.md",
+    "slug": "delete_time_activity_time_clock_v1_time_clocks__timeclockid__time_activities__timeactivityid__delete",
+    "group": "time clock",
+    "description": "Deletes a single time activity (a punch shift or a manual break) from a specified time clock. The activity is identified by its unique ID - the same id returned by GET .../time-activities (and used…"
+  },
+  {
+    "title": "Get geofences",
+    "url": "https://developer.connecteam.com/reference/get_geofences_time_clock_v1_time_clocks__timeclockid__geofences_get.md",
+    "slug": "get_geofences_time_clock_v1_time_clocks__timeclockid__geofences_get",
+    "group": "time clock",
+    "description": "Get all geofences for a specified time clock"
+  },
+  {
+    "title": "Create geofences",
+    "url": "https://developer.connecteam.com/reference/create_geofences_time_clock_v1_time_clocks__timeclockid__geofences_post.md",
+    "slug": "create_geofences_time_clock_v1_time_clocks__timeclockid__geofences_post",
+    "group": "time clock",
+    "description": "Create one or more geofences for the specified time clock. Use jobIdsMode with jobIds to control which jobs each geofence applies to (all jobs, only listed jobs, or all jobs except listed ones). Job…"
+  },
+  {
+    "title": "Get geofence",
+    "url": "https://developer.connecteam.com/reference/get_geofence_time_clock_v1_time_clocks__timeclockid__geofences__fenceid__get.md",
+    "slug": "get_geofence_time_clock_v1_time_clocks__timeclockid__geofences__fenceid__get",
+    "group": "time clock",
+    "description": "Get a geofence site under a specified time clock"
+  },
+  {
+    "title": "Delete geofence",
+    "url": "https://developer.connecteam.com/reference/delete_geo_fence_time_clock_v1_time_clocks__timeclockid__geofences__fenceid__delete.md",
+    "slug": "delete_geo_fence_time_clock_v1_time_clocks__timeclockid__geofences__fenceid__delete",
+    "group": "time clock",
+    "description": "Delete a geofence site under a specified time clock"
+  },
+  {
+    "title": "Download breadcrumbs report",
+    "url": "https://developer.connecteam.com/reference/download_breadcrumbs_report_time_clock_breadcrumbs_v1_report__fileid__download_get.md",
+    "slug": "download_breadcrumbs_report_time_clock_breadcrumbs_v1_report__fileid__download_get",
+    "group": "time clock",
+    "description": "Stream the breadcrumbs JSON report directly from S3. Only available when the task status is 'completed'."
+  },
+  {
+    "title": "Get breadcrumbs report status",
+    "url": "https://developer.connecteam.com/reference/get_report_status_time_clock_breadcrumbs_v1_report__fileid__get.md",
+    "slug": "get_report_status_time_clock_breadcrumbs_v1_report__fileid__get",
+    "group": "time clock",
+    "description": "Get the status of a breadcrumbs report task. Returns 'completed' when the file is ready in S3."
+  },
+  {
+    "title": "Generate breadcrumbs report",
+    "url": "https://developer.connecteam.com/reference/generate_breadcrumbs_report_time_clock_breadcrumbs_v1_report_post.md",
+    "slug": "generate_breadcrumbs_report_time_clock_breadcrumbs_v1_report_post",
+    "group": "time clock",
+    "description": "Initiate a breadcrumbs report for a specific date. Returns a request ID that can be used to check the report status."
+  },
+  {
+    "title": "Clock out from a manual break",
+    "url": "https://developer.connecteam.com/reference/clock_out_manual_break_time_clock_v1_time_clocks__timeclockid__manual_breaks_clock_out_post.md",
+    "slug": "clock_out_manual_break_time_clock_v1_time_clocks__timeclockid__manual_breaks_clock_out_post",
+    "group": "time clock",
+    "description": "End the currently open manual break for an employee. By default, if the break was started from an open shift, the shift is re-opened on the same job (mobile 'Return to job'). Set isResumeShift=false…"
+  },
+  {
+    "title": "Clock in to a manual break",
+    "url": "https://developer.connecteam.com/reference/clock_in_manual_break_time_clock_v1_time_clocks__timeclockid__manual_breaks__manualbreakid__clock_in_post.md",
+    "slug": "clock_in_manual_break_time_clock_v1_time_clocks__timeclockid__manual_breaks__manualbreakid__clock_in_post",
+    "group": "time clock",
+    "description": "Start a manual break for an employee. If the employee is clocked into a shift on the same time clock, the shift is automatically closed and the break is started in one call (attributed to the shift's…"
+  },
+  {
+    "title": "Get policy types",
+    "url": "https://developer.connecteam.com/reference/get_policy_groups_time_off_v1_policy_types_get.md",
+    "slug": "get_policy_groups_time_off_v1_policy_types_get",
+    "group": "time off",
+    "description": "Retrieve a list of policy types associated with the account"
+  },
+  {
+    "title": "Get user balances",
+    "url": "https://developer.connecteam.com/reference/get_balances_time_off_v1_policy_types__policytypeid__balances_get.md",
+    "slug": "get_balances_time_off_v1_policy_types__policytypeid__balances_get",
+    "group": "time off",
+    "description": "Retrieve a list of user time-off balances within a policy type"
+  },
+  {
+    "title": "Get time off requests",
+    "url": "https://developer.connecteam.com/reference/list_time_off_requests_time_off_v1_requests_get.md",
+    "slug": "list_time_off_requests_time_off_v1_requests_get",
+    "group": "time off",
+    "description": "Retrieve a paginated list of time-off requests whose date range overlaps the requested window, with optional filtering by employees and statuses. Approved requests include duration (the amount…"
+  },
+  {
+    "title": "Create time off request",
+    "url": "https://developer.connecteam.com/reference/post_time_off_request_time_off_v1_requests_post.md",
+    "slug": "post_time_off_request_time_off_v1_requests_post",
+    "group": "time off",
+    "description": "Create a new time-off request for a user under a specified policy. The time-off request can be either in pending or approved status."
+  },
+  {
+    "title": "Update time off request",
+    "url": "https://developer.connecteam.com/reference/put_time_off_request_time_off_v1_requests__requestid__put.md",
+    "slug": "put_time_off_request_time_off_v1_requests__requestid__put",
+    "group": "time off",
+    "description": "Update an existing time-off request. The time-off request can be modified with new dates, times, status, or notes."
+  },
+  {
+    "title": "Update user balance",
+    "url": "https://developer.connecteam.com/reference/put_user_balance_time_off_v1_policy_types__policytypeid__balances__userid__put.md",
+    "slug": "put_user_balance_time_off_v1_policy_types__policytypeid__balances__userid__put",
+    "group": "time off",
+    "description": "Update user time-off balance within a policy type"
+  },
+  {
+    "title": "Assign user to time-off policy",
+    "url": "https://developer.connecteam.com/reference/assign_user_to_policy_time_off_v1_time_off_policies__timeoffpolicyid__assignments_put.md",
+    "slug": "assign_user_to_policy_time_off_v1_time_off_policies__timeoffpolicyid__assignments_put",
+    "group": "time off",
+    "description": "Assign user to specified time-off policy."
+  },
+  {
+    "title": "Push a document onto a user",
+    "url": "https://developer.connecteam.com/reference/put_user_document_entry_documents_v1_users__userid__documents__documentid__entry_put.md",
+    "slug": "put_user_document_entry_documents_v1_users__userid__documents__documentid__entry_put",
+    "group": "Documents",
+    "description": "Upload a document entry for a user against a specified document. The file must be uploaded first via the attachments endpoints with featureType set to documents. The resulting status is approved when…"
+  },
+  {
+    "title": "Get user documents",
+    "url": "https://developer.connecteam.com/reference/get_user_documents_documents_v1_user_documents_get.md",
+    "slug": "get_user_documents_documents_v1_user_documents_get",
+    "group": "Documents",
+    "description": "Retrieve which documents are assigned to which users, through document packs the caller is authorized to view, together with each user's status on each document. Filter by document id to see who a…"
+  },
+  {
+    "title": "Get documents",
+    "url": "https://developer.connecteam.com/reference/get_documents_documents_v1_documents_get.md",
+    "slug": "get_documents_documents_v1_documents_get",
+    "group": "Documents",
+    "description": "Retrieve the document templates the caller is authorized to view, with each document's type and expiration configuration. Join on documentId against the user-documents endpoint."
+  },
+  {
+    "title": "Get form",
+    "url": "https://developer.connecteam.com/reference/get_form_forms_v1_forms__formid__get.md",
+    "slug": "get_form_forms_v1_forms__formid__get",
+    "group": "forms",
+    "description": "Retrieve single form information by its unique ID"
+  },
+  {
+    "title": "Get form submissions",
+    "url": "https://developer.connecteam.com/reference/get_form_submissions_forms_v1_forms__formid__form_submissions_get.md",
+    "slug": "get_form_submissions_forms_v1_forms__formid__form_submissions_get",
+    "group": "forms",
+    "description": "Retrieve a list of form submissions by form ID"
+  },
+  {
+    "title": "Get forms",
+    "url": "https://developer.connecteam.com/reference/get_forms_forms_v1_forms_get.md",
+    "slug": "get_forms_forms_v1_forms_get",
+    "group": "forms",
+    "description": "Retrieve a list of forms associated with the account"
+  },
+  {
+    "title": "Get form submission",
+    "url": "https://developer.connecteam.com/reference/get_form_submission_forms_v1_forms__formid__form_submissions__formsubmissionid__get.md",
+    "slug": "get_form_submission_forms_v1_forms__formid__form_submissions__formsubmissionid__get",
+    "group": "forms",
+    "description": "Retrieve a single form submission by form submission ID"
+  },
+  {
+    "title": "Update form submission",
+    "url": "https://developer.connecteam.com/reference/update_form_submissions_forms_v1_forms__formid__form_submissions__formsubmissionid__put.md",
+    "slug": "update_form_submissions_forms_v1_forms__formid__form_submissions__formsubmissionid__put",
+    "group": "forms",
+    "description": "Update a single form submission by form submission ID. Currently, updates are only supported for manager fields."
+  },
+  {
+    "title": "Add dropdown options",
+    "url": "https://developer.connecteam.com/reference/add_dropdown_options_forms_v1_forms__formid__questions__questionid__post.md",
+    "slug": "add_dropdown_options_forms_v1_forms__formid__questions__questionid__post",
+    "group": "forms",
+    "description": "Add a new value option under a specified question. The value will be added to the existing value options and will not override them. Make sure the question type is of dropdown one."
+  },
+  {
+    "title": "Get dropdown question options",
+    "url": "https://developer.connecteam.com/reference/get_dropdown_question_options_forms_v1_forms__formid__questions__questionid__get.md",
+    "slug": "get_dropdown_question_options_forms_v1_forms__formid__questions__questionid__get",
+    "group": "forms",
+    "description": "Retrieve the list of selectable options for a dropdown-type question within a specified form."
+  },
+  {
+    "title": "Update dropdown option",
+    "url": "https://developer.connecteam.com/reference/update_dropdown_options_forms_v1_forms__formid__questions__questionid__options__optionid__put.md",
+    "slug": "update_dropdown_options_forms_v1_forms__formid__questions__questionid__options__optionid__put",
+    "group": "forms",
+    "description": "Update the label of an existing option in a dropdown-type question within a specified form. This action overrides the current value."
+  },
+  {
+    "title": "Delete dropdown option",
+    "url": "https://developer.connecteam.com/reference/delete_dropdown_option_forms_v1_forms__formid__questions__questionid__options__optionid__delete.md",
+    "slug": "delete_dropdown_option_forms_v1_forms__formid__questions__questionid__options__optionid__delete",
+    "group": "forms",
+    "description": "Delete an existing selectable option from a dropdown-type question within a specified form."
+  },
+  {
+    "title": "Get webhook",
+    "url": "https://developer.connecteam.com/reference/get_webhook_settings_v1_webhooks__webhookid__get.md",
+    "slug": "get_webhook_settings_v1_webhooks__webhookid__get",
+    "group": "Webhook settings",
+    "description": "Retrieve single webhook information by its unique ID"
+  },
+  {
+    "title": "Update Webhook",
+    "url": "https://developer.connecteam.com/reference/update_webhook_settings_v1_webhooks__webhookid__put.md",
+    "slug": "update_webhook_settings_v1_webhooks__webhookid__put",
+    "group": "Webhook settings",
+    "description": "Update an existing webhook settings by its unique ID."
+  },
+  {
+    "title": "Delete webhook",
+    "url": "https://developer.connecteam.com/reference/delete_webhook_settings_v1_webhooks__webhookid__delete.md",
+    "slug": "delete_webhook_settings_v1_webhooks__webhookid__delete",
+    "group": "Webhook settings",
+    "description": "Delete a single webhook configuration by its unique ID"
+  },
+  {
+    "title": "Get webhooks",
+    "url": "https://developer.connecteam.com/reference/get_webhooks_by_type_settings_v1_webhooks_get.md",
+    "slug": "get_webhooks_by_type_settings_v1_webhooks_get",
+    "group": "Webhook settings",
+    "description": "Retrieves a list of webhook settings associated with the account."
+  },
+  {
+    "title": "Create webhook",
+    "url": "https://developer.connecteam.com/reference/create_webhook_settings_v1_webhooks_post.md",
+    "slug": "create_webhook_settings_v1_webhooks_post",
+    "group": "Webhook settings",
+    "description": "Create individual webhook settings under specified details"
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "author": "david-darr",
+  "description": "Connecteam operations and a Kairos assistant in your chosen appearance.",
+  "files": [
+    "README.md",
+    "api_index.json",
+    "mcp_server.py",
+    "routes.py",
+    "tab.json",
+    "view.css",
+    "view.js"
+  ],
+  "kind": "tab",
+  "license": "MIT",
+  "name": "Connecteam",
+  "slug": "connecteam",
+  "version": "1.0.0"
+}
