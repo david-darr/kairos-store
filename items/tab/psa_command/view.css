@@ -34,3 +34,5 @@
   .psa-split { grid-template-columns: 1fr; }
   .psa-chat-host { height: 440px; }
 }
+.psa-code { display: block; white-space: pre-wrap; word-break: break-all; font-size: 12px; padding: 8px 10px; border-radius: 8px; background: rgba(0, 0, 0, 0.25); user-select: all; }
+.psa-form details summary { cursor: pointer; margin-top: 4px; }
