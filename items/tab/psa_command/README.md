@@ -20,9 +20,11 @@ PSA Command is a Kairos Store tab for PSA staff. It drives PSA Sales and Taskbar
 
 ## Use the tools in Kairos chat and agents
 
-The tab's operations are also a local MCP server, `mcp_bridge.py` in the installed tab folder (`<Kairos data folder>/tabs/psa_command/`) (standard library Python only, no listener). In **Tool Store**, add a local (stdio) MCP server:
+**One click:** after saving your connections, open **Connections > Use these tools in Kairos chats**, paste the keys once more and press **Add to Kairos chats** (Kairos administrator only). Then start a new chat. Kairos chats can only use tools from servers added in Tool Store, so the tab itself cannot give a chat its tools without this step.
 
-- **Command:** `python`
+**By hand:** the tab's operations are also a local MCP server, `mcp_bridge.py` in the installed tab folder (`<Kairos data folder>/tabs/psa_command/`) (standard library Python only, no listener). In **Tool Store**, add a local (stdio) MCP server:
+
+- **Command:** the Python that runs Kairos (the card's **Set up by hand** shows the exact path)
 - **Arguments:** `<Kairos data folder>/tabs/psa_command/mcp_bridge.py --psa-url <PSA API address> --taskbar-url <Taskbar API address>` (leave out either system you do not use)
 - **Key:** your PSA key and Taskbar key separated by a space (`psak_... tbk_...`). Kairos stores it encrypted and starts the bridge with only that key in its environment.
 

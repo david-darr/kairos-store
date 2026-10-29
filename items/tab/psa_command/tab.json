@@ -1,7 +1,7 @@
 {
   "slug": "psa_command",
   "name": "PSA Command",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Run PSA Sales and Taskbar together: pipeline by rep, overdue work and confirmed changes.",
   "api": 1,
   "hooks": [
