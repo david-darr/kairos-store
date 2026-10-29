@@ -294,8 +294,7 @@ export async function render(container) {
       const manual = el("details", {}, [el("summary", { text: "Set up by hand" }),
         el("div", { class: "meta", text: "Tool Store > MCP servers > add a local (stdio) server named " + setup.name + "." }),
         el("div", { class: "meta", text: "Command:" }), el("code", { class: "psa-code", text: setup.command }),
-        el("div", { class: "meta", text: "Arguments, one per line:" }), el("code", { class: "psa-code", text: setup.args.join("
-") }),
+        el("div", { class: "meta", text: "Arguments, one per line:" }), el("code", { class: "psa-code", text: setup.args.join("\n") }),
         el("div", { class: "meta", text: "Key: your PSA Sales key and Taskbar key separated by a space." })]);
       const body = [el("div", { class: "title", text: "Use these tools in Kairos chats" })];
       if (!setup.systems.length) {
