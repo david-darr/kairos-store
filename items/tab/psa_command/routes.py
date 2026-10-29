@@ -1,4 +1,6 @@
 """PSA Command routes: connections, the combined overview and confirmed actions."""
+import os
+import sys
 from typing import Any, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -83,6 +85,19 @@ async def run_action(body: ActionRequest, user: str = Depends(require_user)) -> 
     except catalog.ApiError as error:
         status = error.status if error.status in (400, 403, 404, 409, 429) else 502
         raise HTTPException(status_code=status, detail=str(error))
+
+
+@router.get("/chat-tools")
+async def chat_tools(user: str = Depends(require_user)) -> dict:
+    """How to start mcp_bridge.py from this install, using the saved addresses.
+    Keys are not included; the person pastes them into the Kairos server."""
+    saved = psa_service.settings(user)
+    args = [os.path.join(os.path.dirname(os.path.abspath(__file__)), "mcp_bridge.py")]
+    for system in ("psa", "taskbar"):
+        if saved[system]["url"]:
+            args += [f"--{system}-url", saved[system]["url"]]
+    return {"name": "PSA Command", "command": sys.executable, "args": args,
+            "systems": [system for system in ("psa", "taskbar") if saved[system]["url"]]}
 
 
 @router.post("/chat")

@@ -283,11 +283,63 @@ export async function render(container) {
     ]);
   }
 
+  function chatToolsCard() {
+    const card = el("div", { class: "card psa-form" }, [el("div", { class: "title", text: "Use these tools in Kairos chats" }),
+      el("div", { class: "meta", text: "Loading..." })]);
+    (async () => {
+      const setup = await api(BASE + "/chat-tools").catch(() => null);
+      const servers = await api("/api/integrations").catch(() => null);
+      if (disposed || !setup) return;
+      const existing = (servers || []).find((item) => item.kind === "mcp_server" && item.name === setup.name);
+      const manual = el("details", {}, [el("summary", { text: "Set up by hand" }),
+        el("div", { class: "meta", text: "Tool Store > MCP servers > add a local (stdio) server named " + setup.name + "." }),
+        el("div", { class: "meta", text: "Command:" }), el("code", { class: "psa-code", text: setup.command }),
+        el("div", { class: "meta", text: "Arguments, one per line:" }), el("code", { class: "psa-code", text: setup.args.join("
+") }),
+        el("div", { class: "meta", text: "Key: your PSA Sales key and Taskbar key separated by a space." })]);
+      const body = [el("div", { class: "title", text: "Use these tools in Kairos chats" })];
+      if (!setup.systems.length) {
+        body.push(el("div", { class: "meta", text: "Save PSA Sales or Taskbar above first." }));
+      } else if (existing) {
+        const state = existing.status?.state, count = existing.status?.tools;
+        body.push(el("div", { class: "meta", text: state === "working"
+          ? `Added to Kairos with ${count ?? "its"} tools. Start a new chat and ask, for example, "create a Taskbar task for Chris".`
+          : "Added to Kairos, but its last check failed: " + (existing.status?.error || "not checked yet") + "." }));
+        if (setup.systems.some((system) => !existing.args?.includes(`--${system}-url`)))
+          body.push(el("div", { class: "meta psa-warn", text: "It was added before every system was connected. Remove " + setup.name + " in Tool Store and add it again here." }));
+        body.push(el("div", { class: "psa-actions" }, [button("Check again", async () => {
+          await api(`/api/integrations/${existing.id}/check`, { method: "POST" });
+          card.replaceWith(chatToolsCard());
+        })]));
+      } else if (servers === null) {
+        body.push(el("div", { class: "meta", text: "Only a Kairos administrator can add chat tools. Ask one to add them, or follow the steps below." }));
+      } else {
+        const keys = Object.fromEntries(setup.systems.map((system) => [system, el("input", { type: "password", autocomplete: "off",
+          placeholder: system === "psa" ? "psak_..." : "tbk_..." })]));
+        body.push(el("div", { class: "meta", text: "Lets any Kairos chat read and change PSA Sales and Taskbar with the same confirmations. Paste the keys once more; Kairos stores them encrypted for the chat tools." }),
+          ...setup.systems.map((system) => field(LABEL[system] + " key", keys[system])),
+          el("div", { class: "psa-actions" }, [button("Add to Kairos chats", async () => {
+            const values = setup.systems.map((system) => keys[system].value.trim());
+            if (values.some((value, i) => !value.startsWith(setup.systems[i] === "psa" ? "psak_" : "tbk_")))
+              return toast("Paste a PSA Sales key (psak_...) and a Taskbar key (tbk_...) for each connected system");
+            const ok = await confirmDialog({ title: "Add PSA Command to Kairos chats?",
+              message: "Kairos chats get the PSA Command tools for " + setup.systems.map((system) => LABEL[system]).join(" and ") + ". Every change still shows a preview and waits for your approval.",
+              confirmLabel: "Add" });
+            if (!ok) return;
+            const added = await api("/api/integrations/mcp-server", { method: "POST", body: JSON.stringify({
+              name: setup.name, mcp_type: "stdio", command: setup.command, args: setup.args, api_key: values.join(" ") }) });
+            toast(added.status?.state === "working" ? "Added. Start a new chat to use the tools." : "Added, but the check failed. See Tool Store.");
+            card.replaceWith(chatToolsCard());
+          }, "primary")]));
+      }
+      body.push(manual);
+      card.replaceChildren(...body);
+    })();
+    return card;
+  }
+
   function drawConnections() {
-    content.replaceChildren(el("div", { class: "psa-grid" }, [connectionCard("psa"), connectionCard("taskbar"),
-      el("div", { class: "card psa-form" }, [el("div", { class: "title", text: "Use these tools in Kairos chat" }),
-        el("div", { class: "meta", text: "Add a local MCP server in Tool Store with command python and this tab's mcp_bridge.py. Give the API addresses as --psa-url and --taskbar-url, and paste both keys, separated by a space, as the server's key. The tab README has the exact steps." })]),
-    ]));
+    content.replaceChildren(el("div", { class: "psa-grid" }, [connectionCard("psa"), connectionCard("taskbar"), chatToolsCard()]));
   }
 
   function draw() {
