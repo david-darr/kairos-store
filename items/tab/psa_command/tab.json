@@ -1,0 +1,16 @@
+{
+  "slug": "psa_command",
+  "name": "PSA Command",
+  "version": "1.0.0",
+  "description": "Run PSA Sales and Taskbar together: pipeline by rep, overdue work and confirmed changes.",
+  "api": 1,
+  "hooks": [
+    "start",
+    "stop",
+    "home_cards"
+  ],
+  "icon_svg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 3v18h18\"/><path d=\"M7 15l4-4 3 3 5-6\"/><circle cx=\"19\" cy=\"8\" r=\"1.5\"/></svg>",
+  "blurb": "One command view for PSA Sales and Taskbar, for PSA administrators.",
+  "detail": "See the pipeline and accounts by rep, overdue PSA and Taskbar tasks side by side, and recent activity. Create and update tasks, reassign schools and log calls, each confirmed before it is sent.",
+  "reads": "Reads PSA Sales and Taskbar through the API keys you paste in"
+}

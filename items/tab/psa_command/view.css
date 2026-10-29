@@ -1,0 +1,36 @@
+.psa-view { max-width: 1200px; }
+.psa-view .view-header, .psa-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.psa-view .view-header { justify-content: space-between; }
+.psa-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.psa-tabs .btn.active { color: var(--text); border-color: var(--accent); }
+.psa-view .card { padding: 16px; margin-bottom: 14px; min-width: 0; }
+.psa-view .card > .title { margin-bottom: 10px; }
+.psa-status { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 14px; }
+.psa-pill { font-size: 12px; border: 1px solid var(--border-strong); border-radius: 20px; padding: 3px 10px; overflow-wrap: anywhere; }
+.psa-pill.ok { border-color: var(--accent); }
+.psa-pill.warn, .psa-warn { color: var(--warn); }
+.psa-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px; }
+.psa-stat { display: flex; flex-direction: column; gap: 4px; margin-bottom: 0 !important; }
+.psa-stat strong { font-size: 26px; font-weight: 500; }
+.psa-scroll { overflow-x: auto; }
+.psa-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.psa-table th, .psa-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.psa-table th { color: var(--text-muted, inherit); font-weight: 500; }
+.psa-split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.psa-column-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+.psa-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid var(--border); }
+.psa-row-text { min-width: 0; overflow-wrap: anywhere; }
+.psa-row .btn { flex: none; }
+.psa-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; align-items: start; }
+.psa-form .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; min-width: 0; }
+.psa-form input, .psa-form select, .psa-form textarea { width: 100%; min-width: 0; box-sizing: border-box; }
+.psa-pair { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 8px; margin-bottom: 12px; }
+.psa-pair .field { margin-bottom: 0; }
+.psa-chat { margin-top: 18px; }
+.psa-chat-host { height: 520px; }
+.psa-error .btn { margin-top: 10px; }
+@media (max-width: 760px) {
+  .psa-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .psa-split { grid-template-columns: 1fr; }
+  .psa-chat-host { height: 440px; }
+}
