@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_from_commit": "e72de759ac0d61cf691e8dea00ede2a7950a98ab",
+  "generated_from_commit": "9ec685c8c7ddf470683e2ed6462bd3ddbdf8f05e",
   "items": [
     {
       "kind": "automation",
@@ -74,6 +74,27 @@
       ],
       "path": "items/tab/pomodoro",
       "archive_sha256": "61294b6485110c276d0a4f2ae4098ad36c27e5d00b2fafdb9a4cc507b9eef378"
+    },
+    {
+      "kind": "tab",
+      "slug": "psa_command",
+      "name": "PSA Command",
+      "description": "For PSA staff: run PSA Sales and Taskbar together. Pipeline and accounts by rep, overdue PSA and Taskbar tasks side by side, recent activity, and confirmed changes in either system. Also works as chat tools. Needs your own PSA Sales and Taskbar API keys.",
+      "author": "david-darr",
+      "version": "1.0.0",
+      "files": [
+        "tab.json",
+        "routes.py",
+        "service.py",
+        "hooks.py",
+        "catalog.py",
+        "mcp_bridge.py",
+        "view.js",
+        "view.css",
+        "README.md"
+      ],
+      "path": "items/tab/psa_command",
+      "archive_sha256": "05543d41c7f7f3ab0a7d5309e32f4dd1ca97c98e5efa939bf8f4a412bbafd953"
     },
     {
       "kind": "tool",
