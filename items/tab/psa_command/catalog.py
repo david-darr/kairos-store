@@ -11,12 +11,14 @@ and repeats the call with ``confirm: true`` only after they agree.
 """
 import json
 import re
+from pathlib import Path
 import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 
 TIMEOUT_SECONDS = 30
+MAX_RESPONSE_BYTES = 16 * 1024 * 1024
 LOCAL_HOSTS = {"localhost", "127.0.0.1", "::1"}
 KEY_PATTERNS = {"psa": re.compile(r"^psak_[0-9a-f]{64}$"), "taskbar": re.compile(r"^tbk_[0-9a-f]{64}$")}
 PATH_PATTERNS = {
@@ -62,11 +64,12 @@ _opener = urllib.request.build_opener(_NoRedirect)
 
 def urllib_transport(method, url, headers, body):
     """Return (status, parsed JSON). Tests replace this; nothing else does network."""
-    data = json.dumps(body).encode() if body is not None else None
+    data = body if isinstance(body,bytes) else json.dumps(body).encode() if body is not None else None
     req = urllib.request.Request(url, data=data, method=method, headers=headers)
     try:
         with _opener.open(req, timeout=TIMEOUT_SECONDS) as response:
-            raw = response.read(2_000_000)
+            raw = response.read(MAX_RESPONSE_BYTES+1)
+            if len(raw)>MAX_RESPONSE_BYTES:raise ApiError('PSA response is too large; narrow the campaign selection')
             return response.status, json.loads(raw or b"{}")
     except urllib.error.HTTPError as error:
         try:
@@ -88,7 +91,7 @@ class Connection:
         return f"Connection({self.system!r}, {self.base_url!r})"
 
     def request(self, method, path, params=None, body=None):
-        if not PATH_PATTERNS[self.system].match(path):
+        if not PATH_PATTERNS[self.system].fullmatch(path) and not (self.system=='psa' and any(method==verb and pattern.fullmatch(path) for verb,pattern in WORKFLOW_PATHS)):
             raise ApiError("Invalid API path")
         url = self.base_url + path
         if params:
@@ -139,7 +142,7 @@ TOOLS = [
           {"season": S, "rep_id": ID}),
     _tool("psa_schools", "psa", "GET", "/schools",
           "Search PSA schools by text, stage (comma list), owner user ID, type or due (overdue, today, none).",
-          {"q": S, "stage": S, "owner": ID, "type": {"enum": ["preschool", "elementary", "private"]},
+          {"q": S, "stage": S, "county":S, "owner": {"anyOf":[ID,{"enum":["unassigned"]}]}, "type": {"enum": ["preschool", "elementary", "private"]},
            "due": {"enum": ["overdue", "today", "none"]}, "sort": {"enum": ["name", "newest", "due", "closed"]},
            "scope": SCOPE, "page": ID, "limit": {"type": "integer", "minimum": 1, "maximum": 100}}),
     _tool("psa_school", "psa", "GET", "/schools/{school_id}", "Read one PSA school and its timeline.",
@@ -193,6 +196,18 @@ TOOLS = [
           lambda a: f"Update Taskbar task {a['task_id']}: " + ", ".join(
               f"{k} to {a[k]}" for k in TB_FIELDS if k in a)),
 ]
+WORKFLOW_PATHS=[]
+for workflow in json.loads(Path(__file__).with_name('workflows.json').read_text(encoding='utf-8')):
+    properties=workflow['inputSchema']['properties']
+    pattern=re.escape(workflow['path'])
+    for parameter in re.findall(r'\{(\w+)\}',workflow['path']):
+        replacement=r'\d+' if properties[parameter].get('type')=='integer' else r'[A-Za-z0-9_-]{1,100}'
+        pattern=pattern.replace(re.escape('{'+parameter+'}'),replacement)
+    WORKFLOW_PATHS.append((workflow['method'],re.compile(pattern)))
+    TOOLS.append(_tool(workflow['name'],'psa',workflow['method'],workflow['path'],workflow['description'],properties,
+        workflow['inputSchema']['required'],not workflow.get('annotations',{}).get('readOnlyHint',workflow['method']=='GET'),
+        lambda args,name=workflow['name']: 'Run '+name+': '+json.dumps({k:v for k,v in args.items() if k!='encoded'},ensure_ascii=False)[:3000]+'. Sending still requires separate human approval.'))
+    TOOLS[-1]['destructive']=bool(workflow.get('annotations',{}).get('destructiveHint',False))
 BY_NAME = {tool["name"]: tool for tool in TOOLS}
 
 
@@ -213,14 +228,23 @@ def _valid(schema, value):
         return value is None
     if kind == "integer":
         return type(value) is int and value >= schema.get("minimum", value) and value <= schema.get("maximum", value)
+    if kind == "number":
+        import math
+        return type(value) in (int,float) and math.isfinite(value) and value >= schema.get("minimum",value) and value <= schema.get("maximum",value)
     if kind == "boolean":
         return type(value) is bool
+    if kind == 'object':
+        if not isinstance(value,dict) or any(k not in value for k in schema.get('required',[])):return False
+        properties=schema.get('properties',{})
+        additional=schema.get('additionalProperties',True)
+        return all(_valid(properties[k],v) if k in properties else additional is True or (isinstance(additional,dict) and _valid(additional,v)) for k,v in value.items())
     if kind == "array":
         return (isinstance(value, list) and schema.get("minItems", 0) <= len(value) <= schema.get("maxItems", len(value))
                 and all(_valid(schema["items"], item) for item in value))
     if kind == "string":
         if not isinstance(value, str) or len(value) < schema.get("minLength", 0) or len(value) > schema.get("maxLength", 20000):
             return False
+        if schema.get('pattern') and not re.fullmatch(schema['pattern'],value):return False
         if schema.get("format") == "uuid":
             return bool(UUID.match(value))
         if schema.get("format") in ("date-time", "date"):
@@ -265,7 +289,7 @@ def call_tool(name, args, connections, now=None):
         return {"confirmation_required": True, "system": LABELS[tool["system"]], "summary": tool["summary"](args),
                 "next_step": "Show this summary to the person. Call again with confirm true only if they approve."}
     path = tool["path"]
-    for key in ("school_id", "task_id"):
+    for key in ("school_id", "task_id", "batch_id", "email_id", "enrollment_id", "draft_id", "import_id", "plan_id"):
         if "{" + key + "}" in path:
             path = path.replace("{" + key + "}", str(args.pop(key)))
     if tool["method"] == "GET":

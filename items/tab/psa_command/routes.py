@@ -1,6 +1,7 @@
 """PSA Command routes: connections, the combined overview and confirmed actions."""
 import os
 import sys
+import asyncio
 from typing import Any, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -13,6 +14,72 @@ from .service import psa_service
 
 api = tab_api.for_tab(__package__)
 router = APIRouter(prefix="/api/tab-psa-command", tags=["psa"])
+
+
+class SignInRequest(BaseModel):
+    url: str
+    email: str
+    password: str
+    capabilities: list[str] = []
+    scope: str = 'read'
+    days: int = 30
+    confirm_send: bool = False
+    create_key: bool = True
+
+
+class HumanRequest(BaseModel):
+    method: str = 'GET'
+    path: str
+    body: Optional[dict] = None
+    params: Optional[dict] = None
+
+
+class UploadRequest(BaseModel):
+    kind: str
+    filename: str
+    encoded: str
+
+
+@router.post('/human-upload')
+async def human_upload(body: UploadRequest,user: str = Depends(require_user)):
+    try:return await asyncio.to_thread(psa_service.human.upload,user,body.kind,body.filename,body.encoded)
+    except ValueError as error:raise HTTPException(status_code=400,detail=str(error))
+    except catalog.ApiError as error:raise HTTPException(status_code=error.status if error.status in (400,401,403,409,413) else 502,detail=str(error))
+
+
+@router.get('/human-session')
+async def human_status(user: str = Depends(require_user)):
+    return psa_service.human.status(user)
+
+
+@router.post('/human-session')
+async def human_sign_in(body: SignInRequest,user: str = Depends(require_user)):
+    try:
+        return await asyncio.to_thread(psa_service.human.connect,user,body.url,body.email,body.password,
+            body.capabilities,body.scope,body.days,body.confirm_send,body.create_key)
+    except (ValueError,catalog.ApiError) as error:
+        raise HTTPException(status_code=400,detail=str(error))
+
+
+@router.delete('/human-session')
+async def human_sign_out(user: str = Depends(require_user)):
+    return psa_service.human.disconnect(user)
+
+
+@router.post('/human-session/revoke')
+async def human_revoke(user: str = Depends(require_user)):
+    try:return await asyncio.to_thread(psa_service.human.revoke_connection,user)
+    except catalog.ApiError as error:
+        raise HTTPException(status_code=error.status if error.status in (400,401,403,404,409) else 502,detail=str(error))
+
+
+@router.post('/human-request')
+async def human_request(body: HumanRequest,user: str = Depends(require_user)):
+    # UI only. This broker is deliberately absent from catalog.py and MCP tools.
+    try:
+        return await asyncio.to_thread(psa_service.human.request,user,body.method,body.path,body.body,body.params)
+    except ValueError as error:raise HTTPException(status_code=400,detail=str(error))
+    except catalog.ApiError as error:raise HTTPException(status_code=error.status if error.status in (400,401,403,404,409,429) else 502,detail=str(error))
 
 
 class ConnectionRequest(BaseModel):

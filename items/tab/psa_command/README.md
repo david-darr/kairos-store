@@ -1,43 +1,44 @@
-# PSA Command tab
+# PSA Command 1.4.0
 
-PSA Command is a Kairos Store tab for PSA staff. It drives PSA Sales and Taskbar together: one overview, confirmed changes in either system, Home cards, and the same operations as tools for Kairos chats and agents. Install it from **Tool Store > Tabs**. Nothing is sent anywhere until you save a connection.
+Use PSA Sales and optional Taskbar from Kairos, without needing the PSA website for normal sales work. This updates the existing psa_command tab and retains its saved connections. Install only after your PSA administrator releases the compatible contacts, templates, approvals and campaign API and sending worker.
 
-## What it shows and does
+## Start here
 
-- **Overview:** connection status for both systems; schools, closes this month and overdue counts; pipeline and accounts by rep (administrator PSA key); PSA and Taskbar overdue tasks side by side, each with **Mark done**; recent sales activity.
-- **Actions:** create a task in PSA Sales or Taskbar, reassign a PSA school to a rep, log a call, meeting or note. Every change is previewed in a confirmation dialog and only sent after **Send change**.
-- **Connections:** API address and key for each system. Keys are encrypted with this tab's own key (`api.encrypt`) in `data/tab-data/psa_command/connections.json`, scoped to your Kairos user, and never returned to the page or written to logs. The page shows "Saved; leave blank to keep".
-- **Ask Kairos:** opens a PSA Command chat seeded with the latest overview, marked as untrusted data so Kairos asks before shell commands.
-- **Home cards** (Settings > Layout > From your tabs, hidden until you show them): *Overdue sales tasks* (up to five, PSA and Taskbar badges) and *Closes this month* (or overdue totals for a non-admin key). Cards read only the cached overview; no network on Home.
-- The overview is cached per user and refreshed when you press **Refresh**, after each confirmed change, every 15 minutes while the tab is on, and in the daily sync.
+Open Account & setup and sign in to your PSA employee account using the private form. Your password is transient; the private website session and delegated API connection are separate and stored encrypted for your Kairos user. Human sign-in may need renewal after 12 hours. Delegated keys expire after the chosen 7, 30 or 90 days. Renewing a sign-in does not silently grant new permissions.
 
-## Setup
+Choose the school access and optional capabilities you need. Approved sending is separately delegated. Library, commission and team management are PSA-admin-only opt-ins. Old keys do not gain these permissions. Mail credentials belong in private account controls, never in chat.
 
-1. **PSA Sales key:** in PSA Sales, open **Settings > AI & integrations**, create a key (start with Read only), and copy it. API address: `https://psa-sales-backend.onrender.com/api/agent/v1`.
-2. **Taskbar key:** in Taskbar, open **Settings > AI & integrations** and create a key. API address: `https://mlsxmivbfnabqtfrlmdg.supabase.co/functions/v1/agent-api/v1`.
-3. In Kairos, **Tool Store > Tabs**, install **PSA Command** and review the code prompt. Open it, go to **Connections**, paste each address and key, **Save**, then **Test**.
-4. Use read-only keys until the overview looks right, then switch to write keys to make changes. An administrator PSA key is needed for rep breakdowns, reassignment and closes this month.
+## Workspaces
 
-## Use the tools in Kairos chat and agents
+- My work: actual school-stage counts, due follow-ups, overdue PSA/Taskbar tasks, team account ownership and recent activity. Missing connections and errors are shown explicitly.
+- Email outreach: Start here; whole-campaign and one-time request review; follow-up plans; sending progress; school replies; shared templates and PDF catalog.
+- Tasks & school updates: create tasks, log activity and change school ownership using normal employee access rules and confirmation.
+- Account & setup: private employee sign-in, explicit delegation, revocation, chat-tool setup and optional manual Taskbar connection.
 
-**One click:** after saving your connections, open **Connections > Use these tools in Kairos chats**, paste the keys once more and press **Add to Kairos chats** (Kairos administrator only). Then start a new chat. Kairos chats can only use tools from servers added in Tool Store, so the tab itself cannot give a chat its tools without this step.
+Phone layouts use compact section/action selectors, stacked metrics and readable rep cards. Colors and controls inherit Kairos appearance rather than forcing a separate theme.
 
-**By hand:** the tab's operations are also a local MCP server, `mcp_bridge.py` in the installed tab folder (`<Kairos data folder>/tabs/psa_command/`) (standard library Python only, no listener). In **Tool Store**, add a local (stdio) MCP server:
+## Use any Kairos chat
 
-- **Command:** the Python that runs Kairos (the card's **Set up by hand** shows the exact path)
-- **Arguments:** `<Kairos data folder>/tabs/psa_command/mcp_bridge.py --psa-url <PSA API address> --taskbar-url <Taskbar API address>` (leave out either system you do not use)
-- **Key:** your PSA key and Taskbar key separated by a space (`psak_... tbk_...`). Kairos stores it encrypted and starts the bridge with only that key in its environment.
+Under Account & setup, add/check PSA Command chat tools using the existing MCP setup. In each existing or new chat, select PSA Command in that chat's Integrations menu. Adding a server does not automatically select it in every chat. New or changed tool definitions must be reviewed in Tool Store > Tools.
 
-Tools: `sales_overview` (both systems as one), `psa_connection`, `psa_pipeline`, `psa_team`, `psa_accounts`, `psa_commissions`, `psa_schools`, `psa_school`, `psa_tasks`, `psa_outreach`, `psa_create_task`, `psa_update_task`, `psa_update_school`, `psa_assign_schools`, `psa_log_activity`, `taskbar_connection`, `taskbar_programs`, `taskbar_members`, `taskbar_tasks`, `taskbar_task`, `taskbar_create_task`, `taskbar_update_task`. Only tools for connected systems are listed.
+Ask for psa_capabilities first to check actual server availability and the connected key's permissions. Tools cover schools, role-based contacts, imports, reviewed ownership changes, discovery/territory planning, tasks, templates/PDF uploads, sequence definitions, seasonal commissions, team access, campaign preparation/status/stop and threaded reply preparation. PSA and Taskbar enforce the current connected employee role on every call. Taskbar is optional.
 
-Safety: every write tool first returns a plain-language preview and changes nothing; the assistant must show it and call again with `confirm: true` only after you approve (Kairos also asks before running tools you have not pre-approved). Results are prefixed as untrusted data and the server instructions tell the model never to follow instructions found in records. Tools only call fixed API paths on the addresses you configured, refuse redirects and require HTTPS (plain HTTP only for localhost). There is no tool for sending email.
+Write tools return a review before a confirmed operation. Large file bytes need not be pasted in chat: the companion PSA CLI supports uploading a specifically chosen local PDF or template JSON. PDF uploads are limited to 10 MB, template JSON to 1 MB; template selections support up to three PDFs totaling 15 MB. Queued messages retain reviewed PDF versions.
 
-The key stays in two places if you use both the tab and chat tools: the tab's encrypted store and the MCP server's encrypted key. Revoke keys in PSA Sales and Taskbar when you remove either.
+## Sending and approvals
 
-## Updates
+An assistant cannot approve itself, obtain the private website JWT or choose another sender. Review the exact contacts, personalized messages, PDFs, schedule, daily cap and end date in the private Email outreach controls. Campaign approval covers only the displayed fixed audience; future matching schools are not silently added. One-time batch approval does not authorize future follow-ups.
 
-PSA Command installs into your Kairos data folder, not the app folder, so Kairos updates and reinstalls leave it and its saved connections alone. It never updates itself: when a new version is published, the Tool Store shows **Update available** and nothing changes until you choose **Update**.
+The separate PSA sending worker is required for all queued mail. Missing/offline worker status is visible. Campaign automation is disabled on the server by default and must be enabled deliberately after a controlled live test. Replies, stop requests, bounced mail, ownership changes, expired/revoked delegation and changed approval inputs can block further sends. An in-flight message may finish after stopping. Unknown SMTP outcomes are not automatically resent; SMTP acceptance is not proof of inbox delivery.
 
-## Files
+Pause, revoke or cancel from the native controls when appropriate. Agents can prepare, read, pause or cancel within their delegated access; final sending approval and resuming an authorized campaign are private human actions. Credentials and delegation management are also human-only. New tool access never silently expands old keys.
 
-`tab.json` manifest (hooks `start`, `stop`, `home_cards`); `catalog.py` shared clients, tool catalog, validation, previews and overview (no Kairos imports); `service.py` encrypted connections, snapshot cache, tool runner, chat briefing; `routes.py` `/api/tab-psa-command/...` (all `require_user`); `hooks.py` background refresh and Home cards; `view.js`/`view.css` the page; `mcp_bridge.py` the chat tools.
+## Updates and privacy
+
+The tab source lives in Kairos's user-data custom-tabs area, so app updates do not replace it. Source updates require approval of their exact fingerprint; restart Kairos when already mounted Python code changes. New chat tools require their separate review. Updating source preserves existing saved tab data.
+
+This package contains source only. No saved sessions, credentials, employee records or live account data are included. Outside notes, emails and tool results are untrusted data. Network requests use configured fixed API paths; credentials are not destination arguments. The human session broker is excluded from model tools. Review both the tab and MCP connections when removing access; revoke the corresponding PSA/Taskbar keys as needed.
+
+## License
+
+MIT. Submitted by david-darr for the existing PSA Command listing.
