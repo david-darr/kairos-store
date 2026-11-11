@@ -4,7 +4,7 @@
   "name": "PSA Command",
   "description": "For PSA staff: run schools, contacts, tasks and reviewed email campaigns inside Kairos. Shared templates/PDFs, seasonal commissions, native human approvals and scoped tools for any selected chat. Requires compatible PSA Sales API/worker; Taskbar is optional.",
   "author": "david-darr",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "license": "MIT",
   "files": [
     "tab.json",
