@@ -70,19 +70,26 @@ export async function render(container) {
     const email=el('input',{type:'email',autocomplete:'username',required:true});
     const password=el('input',{type:'password',autocomplete:'current-password',required:true});
     const create=el('input',{type:'checkbox',checked:true});
-    const scope=el('select');options(scope,[['read','View my schools and tasks'],['write','Update my schools and tasks']],'Choose school access');scope.value='read';
+    const scope=el('select');options(scope,[['full','Full access for my PSA role (recommended)'],['write','Custom read and write access'],['read','Custom read-only access']],'Choose school access');scope.value='full';
     const duration=el('select');options(duration,[[7,'7 days'],[30,'30 days'],[90,'90 days']],'Choose delegation expiry');duration.value='30';
     const caps=[];
     form.append(field('PSA email',email),field('PSA password',password),el('details',{},[el('summary',{text:'Advanced: connection address'}),field('PSA API address',url)]));
-    const grants=el('fieldset',{},[el('legend',{text:'What may Kairos help with?'}),field('School records',scope),field('How long may Kairos use this connection?',duration)]);
+    const grants=el('fieldset',{},[el('legend',{text:'AI access to PSA'}),field('Access level',scope),field('How long may Kairos use this connection?',duration)]);
     for(const [cap,label] of Object.entries({'schools:import':'Import reviewed schools and contacts','outreach:read':'Read templates, PDFs, my replies and follow-up status','outreach:prepare':'Prepare outreach and check my inbox','outreach:send':'Run only batches or campaigns I explicitly approve','library:manage':'Manage team templates, PDFs and follow-up definitions (PSA admins only)','commissions:manage':'Create and correct seasonal commissions (PSA admins only)','team:manage':'Manage team access and invitations (PSA admins only)'})){
       const box=el('input',{type:'checkbox'});caps.push([cap,box]);grants.append(el('label',{},[box,document.createTextNode(' '+label)]));
     }
     const delegate=el('input',{type:'checkbox'});
     grants.append(el('label',{},[delegate,document.createTextNode(' I explicitly delegate execution of my approved batches and campaigns. My agent cannot approve itself.')]));
     const alert=el('div',{'role':'status'}),submit=el('button',{class:'btn primary',type:'submit',text:'Connect PSA account'});
-    form.append(el('label',{},[create,document.createTextNode(' Set up a new Kairos connection (leave off when renewing your sign-in)')]),grants,alert,submit);
-    create.onchange=()=>{grants.disabled=!create.checked;};
+    form.append(el('label',{},[create,document.createTextNode(' Create a separate connection (leave off to keep and upgrade this connection)')]),grants,alert,submit);
+    const applyAccess=()=>{
+      const full=scope.value==='full';
+      for(const [,box] of caps){box.checked=full;box.disabled=full;}
+      delegate.checked=full;delegate.disabled=full;
+    };
+    scope.onchange=applyAccess;applyAccess();
+    grants.prepend(el('p',{class:'meta',text:'Full access grants reading and editing, imports, outreach preparation and execution of approved messages, plus management tools allowed by your PSA role. It cannot grant administrator rights or approve sending on your behalf. Connecting with full access also upgrades this connection in your existing chats.'}));
+    create.onchange=()=>{grants.disabled=!create.checked && scope.value!=='full';};
     form.addEventListener('submit',async(event)=>{
       event.preventDefault();submit.disabled=true;alert.textContent='Connecting...';
       try{
@@ -100,7 +107,7 @@ export async function render(container) {
     card.append(form);
     api(BASE+'/human-session').then(status=>{
       if(disposed||!card.isConnected)return;
-      if(status.key_id){create.checked=false;grants.disabled=true;email.value=status.employee.email;}
+      if(status.key_id){create.checked=false;grants.disabled=false;email.value=status.employee.email;}
       if(status.connected){
         card.prepend(el('p',{class:'meta',text:'Human session: '+status.employee.name+' · expires '+new Date(status.expires_at).toLocaleString()}));
         card.append(button('Sign out of PSA here',async()=>{await api(BASE+'/human-session',{method:'DELETE'});draw();},'quiet'),el('p',{class:'meta',text:'Signing out stops local approvals. The separate agent key remains delegated until revoked or expired.'}));

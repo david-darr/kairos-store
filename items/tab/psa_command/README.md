@@ -42,3 +42,6 @@ This package contains source only. No saved sessions, credentials, employee reco
 ## License
 
 MIT. Submitted by david-darr for the existing PSA Command listing.
+
+### Connection access
+New connections default to **Full access for my PSA role**. This grants CRM read/write and all additional capabilities allowed by the authenticated employee role. The connection form explicitly delegates execution of human-approved sends; it never delegates approval itself. Custom read-only or read/write access remains available. Existing keys retain their original scopes until their owner explicitly reconnects with full access. That private sign-in upgrades the same active key without replacing the key in chat integrations or extending its expiry. Custom sign-in renewal leaves permissions unchanged. The PSA API must support POST /api/agent-keys/{id}/full-access.
