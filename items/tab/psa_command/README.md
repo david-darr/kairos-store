@@ -48,3 +48,11 @@ New connections default to **Full access for my PSA role**. This grants CRM read
 
 ### School-specific outreach stops
 Contact tools accept school_do_not_contact and school_suppression_reason independently of global do_not_contact and suppression_reason. A school-only stop never lifts a global opt-out. This update needs the school contact suppression migration and compatible PSA API.
+
+
+### Local PDF file references (1.4.3)
+Use `psa_upload_pdf_file` with an explicitly selected absolute `.pdf` path on the computer running this MCP server. The preview shows filename, size and `expected_sha256`. Once approved, repeat with `confirm: true` and the returned fingerprint. The bridge transfers the PDF directly to the existing catalog API without putting base64 into chat, and returns its reusable attachment ID. A changed file requires re-review. Administrators need `library:manage`; the API checks the same role again. The existing inline upload tool remains supported. No sending or campaign approval is performed.
+
+The PDF must be a regular locally available file, at most 10 MiB. Relative/network/device paths, URLs, symlinks, reparse points and folders are rejected. A path refers to the MCP server's computer, not the cloud PSA backend. Download or sync Drive PDFs locally before using this tool; private Drive IDs are not resolved and Google credentials are never extracted.
+
+After updating, Check the PSA Command MCP connection and review/accept the new tool in Tool Store > Tools before using it in a chat. Normal tab-source approval/reload still applies. No new PSA key is required.

@@ -10,6 +10,10 @@ plain-language preview and changes nothing; the caller shows it to the person
 and repeats the call with ``confirm: true`` only after they agree.
 """
 import json
+import base64
+import hashlib
+import os
+import stat
 import re
 from pathlib import Path
 import urllib.error
@@ -208,6 +212,10 @@ for workflow in json.loads(Path(__file__).with_name('workflows.json').read_text(
         workflow['inputSchema']['required'],not workflow.get('annotations',{}).get('readOnlyHint',workflow['method']=='GET'),
         lambda args,name=workflow['name']: 'Run '+name+': '+json.dumps({k:v for k,v in args.items() if k!='encoded'},ensure_ascii=False)[:3000]+'. Sending still requires separate human approval.'))
     TOOLS[-1]['destructive']=bool(workflow.get('annotations',{}).get('destructiveHint',False))
+TOOLS.append(_tool('psa_upload_pdf_file','psa','POST','/operations/psa_upload_pdf',
+    'Admin: upload a locally available PDF by absolute file path, without putting its bytes in chat. Requires library:manage. Use only a file the person selected or explicitly authorized. Maximum 10 MB; no URLs, network paths, symlinks or folders. Preview first, then confirm with expected_sha256. Uploading never sends mail or approves a campaign.',
+    {'file_path':{'type':'string','minLength':1,'maxLength':4096},'filename':{'type':'string','minLength':1,'maxLength':150},'expected_sha256':{'type':'string','pattern':'[a-f0-9]{64}'}},['file_path'],True,
+    lambda args:'Upload the selected local PDF to the shared PSA attachment catalog.'))
 BY_NAME = {tool["name"]: tool for tool in TOOLS}
 
 
@@ -272,6 +280,57 @@ def validate(tool, args):
             raise ValueError(f"Invalid value for {name}")
 
 
+PDF_FILE_LIMIT=10*1024*1024
+
+def read_pdf_file_reference(file_path,filename=None):
+    """Read only an explicitly selected regular local PDF, bounded before allocation."""
+    if not isinstance(file_path,str) or any(c in file_path for c in ('\0','\r','\n')) or file_path.startswith(('\\\\','//')):
+        raise ValueError('Choose an absolute local PDF path; network/device paths and URLs are not supported')
+    path=Path(file_path)
+    if not path.is_absolute() or '..' in path.parts or ':' in file_path[len(path.drive):] or path.suffix.lower()!='.pdf':
+        raise ValueError('Choose an absolute local .pdf file path, without traversal or URLs')
+    name=filename if filename is not None else re.sub(r'[^A-Za-z0-9 _.-]','_',path.name)
+    if not isinstance(name,str) or not re.fullmatch(r'[A-Za-z0-9 _.-]{1,150}',name) or not name.lower().endswith('.pdf'):
+        raise ValueError('Choose a PDF catalog filename of at most 150 characters')
+    try:
+        for part in (path,*path.parents):
+            entry=part.lstat()
+            if stat.S_ISLNK(entry.st_mode) or getattr(entry,'st_file_attributes',0)&0x400:
+                raise ValueError('Download the PDF locally first; symlinks and reparse points are not supported')
+        before=path.lstat()
+        if not stat.S_ISREG(before.st_mode) or not 5<=before.st_size<=PDF_FILE_LIMIT:
+            raise ValueError('Choose a regular PDF file between 5 bytes and 10 MB')
+        descriptor=os.open(path,os.O_RDONLY|getattr(os,'O_BINARY',0)|getattr(os,'O_NOFOLLOW',0)|getattr(os,'O_NONBLOCK',0))
+        with os.fdopen(descriptor,'rb') as source:
+            actual=os.fstat(source.fileno())
+            if not stat.S_ISREG(actual.st_mode) or (actual.st_dev,actual.st_ino)!=(before.st_dev,before.st_ino):
+                raise ValueError('The selected file changed; preview it again')
+            content=source.read(PDF_FILE_LIMIT+1)
+            after=os.fstat(source.fileno())
+            if len(content)!=actual.st_size or (after.st_size,after.st_mtime_ns)!=(actual.st_size,actual.st_mtime_ns):
+                raise ValueError('The selected file changed while reading; preview it again')
+    except OSError:
+        raise ValueError('The selected PDF cannot be read on the machine running this MCP server') from None
+    if len(content)>PDF_FILE_LIMIT or not content.startswith(b'%PDF-'):
+        raise ValueError('Choose a valid PDF no larger than 10 MB')
+    return name,content,hashlib.sha256(content).hexdigest()
+
+def upload_pdf_file_reference(connection,args):
+    if args.get('confirm') is True and not args.get('expected_sha256'):
+        raise ValueError('Preview the local PDF first, then confirm using the returned expected_sha256')
+    profile=connection.request('GET','/me')
+    if profile.get('admin') is not True or 'library:manage' not in profile.get('key',{}).get('capabilities',[]):
+        raise ApiError('An administrator connection with library:manage is required to upload PDFs',403)
+    name,content,digest=read_pdf_file_reference(args['file_path'],args.get('filename'))
+    if args.get('confirm') is not True:
+        return dict(confirmation_required=True,filename=name,bytes=len(content),expected_sha256=digest,
+            summary='Upload this PDF to the PSA attachment catalog. No email will be sent.',
+            next_step='Review the filename and size, then repeat with confirm true and this expected_sha256.')
+    if args['expected_sha256']!=digest:
+        raise ValueError('The selected PDF changed after review. Preview it again before uploading')
+    return connection.request('POST','/operations/psa_upload_pdf',body=dict(filename=name,encoded=base64.b64encode(content).decode('ascii')))
+
+
 def call_tool(name, args, connections, now=None):
     """Run one catalog tool. ``connections`` maps 'psa'/'taskbar' to a Connection (or None)."""
     tool = BY_NAME.get(name)
@@ -284,6 +343,8 @@ def call_tool(name, args, connections, now=None):
     connection = connections.get(tool["system"])
     if connection is None:
         raise ValueError(f"{LABELS[tool['system']]} is not connected in PSA Command")
+    if name=="psa_upload_pdf_file":
+        return upload_pdf_file_reference(connection,args)
     confirmed = args.pop("confirm", False)
     if tool["write"] and confirmed is not True:
         return {"confirmation_required": True, "system": LABELS[tool["system"]], "summary": tool["summary"](args),
