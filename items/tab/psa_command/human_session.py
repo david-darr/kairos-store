@@ -50,12 +50,20 @@ class HumanSession:
         return data
     def connect(self,user,base,email,password,capabilities,scope='read',days=30,confirm_send=False,create_key=True):
         root=origin(base)
+        full_access=scope=='full'
         if not isinstance(email,str) or not isinstance(password,str) or not email.strip() or not password:raise ValueError('Enter your PSA email and password')
-        if scope not in ('read','write') or type(days) is not int or days not in (7,30,90):raise ValueError('Choose valid access and expiry')
+        if scope not in ('read','write','full') or type(days) is not int or days not in (7,30,90):raise ValueError('Choose valid access and expiry')
         if not isinstance(capabilities,list) or any(c not in CAPABILITIES for c in capabilities):raise ValueError('Choose valid optional permissions')
-        if 'outreach:send' in capabilities and confirm_send is not True:raise ValueError('Explicitly delegate approved sending')
+        if scope != 'full' and 'outreach:send' in capabilities and confirm_send is not True:raise ValueError('Explicitly delegate approved sending')
         login=self._call(root,None,'POST','/api/login',{'email':email,'password':password})
         token=login['access_token'];employee=login['user']
+        # The private sign-in form explicitly describes this preset. Determine
+        # admin-only grants from the authenticated employee, never a UI claim.
+        if scope == 'full':
+            scope='write'
+            admin_only={'library:manage','commissions:manage','team:manage'}
+            capabilities=[cap for cap in CAPABILITIES if employee.get('admin') or cap not in admin_only]
+            confirm_send=True
         # Display/storage expiry only. The PSA API validates the JWT on every call.
         try:
             encoded=token.split('.')[1];expires=float(json.loads(base64.urlsafe_b64decode(encoded+'='*(-len(encoded)%4)))['exp'])
@@ -65,6 +73,8 @@ class HumanSession:
             if not old or old['root']!=root or old['employee']['id']!=employee['id']:raise ValueError('Sign in as the previously connected employee, or explicitly create a new connection')
             keys=self._call(root,token,'GET','/api/agent-keys')['items']
             if not any(k['id']==old['key_id'] and not k.get('expired') and not k.get('revoked') for k in keys):raise ValueError('Your old key is inactive. Explicitly create a new connection.')
+            if full_access:
+                self._call(root,token,'POST','/api/agent-keys/'+str(old['key_id'])+'/full-access',{'confirm_full_access':True})
             entry={**old,'token':self.api.encrypt(token),'expires_at':expires,'employee':{k:employee.get(k) for k in ('id','name','email','admin','mail_connected')}}
             with self.lock:
                 sessions=self.api.read_json('human-session.json',{});sessions[user]=entry;self.api.write_json('human-session.json',sessions)
