@@ -190,6 +190,7 @@ export async function render(container) {
       }else if(nativePane==='progress'){
         const [batches,worker]=await Promise.all([run('psa_outreach',{scope:'mine',limit:25}),human('GET','/api/outreach/worker')]);if(!active())return;
         body.append(el('p',{role:'status',text:worker.online?'Email sending service is available':'Sending service is unavailable. Your saved emails will wait; nothing starts from this screen alone.'}));
+        if(worker.mode==='web')body.append(el('p',{class:'meta',text:'Sending uses the existing site. Host startup or service limits can delay scheduled emails; saved progress is retained.'}));
         if(!batches.items?.length)body.append(el('p',{text:'No batches yet.'}));
         for(const batch of batches.items||[]){const row=el('section',{class:'card'},[el('h4',{text:'Batch #'+batch.id+' · '+statusLabel(batch.status)})]);
           row.append(button('Read progress',async()=>{const detail=await run('psa_outreach_batch',{batch_id:batch.id});if(active())row.append(el('pre',{text:JSON.stringify(detail,null,2)}));},'quiet'),button('Stop remaining messages',()=>perform('psa_cancel_outreach',{batch_id:batch.id}),'quiet'));body.append(row);}
@@ -294,7 +295,7 @@ export async function render(container) {
         const preview=await human('POST','/api/outreach/sequence-enrollments/preview',settings);if(!active())return;
         const acknowledgement=el('input',{type:'checkbox'}),commit=button(settings.mode==='automatic'?'Authorize these scheduled sends':'Save plan with approval before each email',async()=>{
           await human('POST','/api/outreach/sequence-enrollments/commit',{review_id:preview.review_id,settings,...(settings.mode==='automatic'?{confirm:'AUTHORIZE_AUTOMATIC_SEQUENCE'}:{})});
-          toast('Enrollment saved. The separate worker enforces the approved rules.');drawOutreach();
+          toast('Enrollment saved. The sending service enforces the approved rules.');drawOutreach();
         },'primary');commit.disabled=true;acknowledgement.onchange=()=>{commit.disabled=!acknowledgement.checked;};
         reviewHost.replaceChildren(el('p',{text:'Frozen '+settings.mode+' enrollment: '+preview.starts_at+' to '+preview.ends_at}),...preview.rows.flatMap(row=>row.steps.map(step=>{
           const mail=plainMail({...step,email:row.email,school_name:row.school_name});mail.append(el('p',{class:'meta',text:step.already_sent?'Already sent; will not repeat':'Due '+new Date(step.due_at).toLocaleString()+' · day '+step.day}));return mail;
