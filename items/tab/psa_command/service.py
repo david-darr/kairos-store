@@ -12,6 +12,7 @@ import threading
 from core import tab_api
 from core.tab_api import wrap_untrusted
 from . import catalog
+from .human_session import HumanSession
 
 api = tab_api.for_tab(__package__)
 SYSTEMS = ("psa", "taskbar")
@@ -23,6 +24,7 @@ class PSACommandService:
         self._lock = threading.Lock()
         # Tests swap this for a synthetic transport; production uses urllib.
         self.transport = None
+        self.human = HumanSession(api,self.save_settings)
 
     # -- connections -------------------------------------------------------------
 
