@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_from_commit": "844f49f704910ecccd2e9900e1e4f9b95661adeb",
+  "generated_from_commit": "066ae13b03480ee3e8e80231bd9d0a4f83ca2f74",
   "items": [
     {
       "kind": "automation",
@@ -79,22 +79,24 @@
       "kind": "tab",
       "slug": "psa_command",
       "name": "PSA Command",
-      "description": "For PSA staff: run PSA Sales and Taskbar together. Pipeline and accounts by rep, overdue PSA and Taskbar tasks side by side, recent activity, and confirmed changes in either system. Also works as chat tools. Needs your own PSA Sales and Taskbar API keys.",
+      "description": "For PSA staff: run schools, contacts, tasks and reviewed email campaigns inside Kairos. Shared templates/PDFs, seasonal commissions, native human approvals and scoped tools for any selected chat. Requires compatible PSA Sales API/worker; Taskbar is optional.",
       "author": "david-darr",
-      "version": "1.1.1",
+      "version": "1.4.0",
       "files": [
         "tab.json",
         "routes.py",
         "service.py",
         "hooks.py",
-        "catalog.py",
-        "mcp_bridge.py",
         "view.js",
         "view.css",
+        "catalog.py",
+        "human_session.py",
+        "mcp_bridge.py",
+        "workflows.json",
         "README.md"
       ],
       "path": "items/tab/psa_command",
-      "archive_sha256": "28322315bbfbd7a9c09a5fdb4b0b047adbf0afcbc8b9c6c066a8c18a0377bb8f"
+      "archive_sha256": "c9401d25fa5cd89e1d49e99fa5f990337f1ab2de81b5ddb219b6dc89eeba635b"
     },
     {
       "kind": "tool",
