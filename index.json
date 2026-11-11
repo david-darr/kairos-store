@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_from_commit": "066ae13b03480ee3e8e80231bd9d0a4f83ca2f74",
+  "generated_from_commit": "5ff5b1982edc225a1e1953c1cff3e8e6f1129d78",
   "items": [
     {
       "kind": "automation",
@@ -81,7 +81,7 @@
       "name": "PSA Command",
       "description": "For PSA staff: run schools, contacts, tasks and reviewed email campaigns inside Kairos. Shared templates/PDFs, seasonal commissions, native human approvals and scoped tools for any selected chat. Requires compatible PSA Sales API/worker; Taskbar is optional.",
       "author": "david-darr",
-      "version": "1.4.0",
+      "version": "1.4.1",
       "files": [
         "tab.json",
         "routes.py",
@@ -96,7 +96,7 @@
         "README.md"
       ],
       "path": "items/tab/psa_command",
-      "archive_sha256": "c9401d25fa5cd89e1d49e99fa5f990337f1ab2de81b5ddb219b6dc89eeba635b"
+      "archive_sha256": "dfd7810e1414a236e5577ada9dcb4b433db7f20185729016b787041d6b59f78b"
     },
     {
       "kind": "tool",
