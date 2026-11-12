@@ -59,31 +59,33 @@ class PSACommandService:
             api.write_json("connections.json", data)
         return self.settings(user)
 
-    def connections(self, user):
+    def connections(self, user, workspace="school"):
         saved = self._all().get(user, {})
         result = {}
         for system in SYSTEMS:
             entry = saved.get(system) or {}
             if entry.get("url") and entry.get("key"):
                 result[system] = catalog.Connection(system, entry["url"], api.decrypt(entry["key"]),
-                                                    transport=self.transport)
+                                                    transport=self.transport, workspace=workspace if system == "psa" else None)
             else:
                 result[system] = None
         return result
 
     # -- overview and actions ------------------------------------------------------
 
-    def snapshot(self, user):
-        return api.read_json("snapshot.json", {}).get(user)
+    def snapshot(self, user, workspace="school"):
+        return api.read_json("snapshot-business.json" if workspace == "business" else "snapshot.json", {}).get(user)
 
-    async def refresh(self, user):
-        connections = self.connections(user)
+    async def refresh(self, user, workspace="school"):
+        if workspace not in ("school","business"):raise ValueError("Choose school or business workspace")
+        connections = self.connections(user, workspace)
         data = await asyncio.to_thread(catalog.overview, connections)
         if len(json.dumps(data)) <= SNAPSHOT_LIMIT:
             with self._lock:
-                snapshots = api.read_json("snapshot.json", {})
+                filename = "snapshot-business.json" if workspace == "business" else "snapshot.json"
+                snapshots = api.read_json(filename, {})
                 snapshots[user] = data
-                api.write_json("snapshot.json", snapshots)
+                api.write_json(filename, snapshots)
         return data
 
     async def refresh_all(self):
@@ -116,15 +118,17 @@ class PSACommandService:
 
     # -- chat ------------------------------------------------------------------
 
-    def brief_chat(self, user):
+    def brief_chat(self, user, workspace="school"):
         """Open this user's PSA Command chat and add the latest overview as
         untrusted context, without spending a model turn."""
-        session_id = api.chat_session(f"psa:{user}", "PSA Command", untrusted="PSA Sales and Taskbar records")
-        snapshot = self.snapshot(user)
+        if workspace not in ("school","business"):raise ValueError("Choose school or business workspace")
+        session_key = f"psa:{user}:business" if workspace == "business" else f"psa:{user}"
+        session_id = api.chat_session(session_key, "PSA Command", untrusted="PSA Sales and Taskbar records")
+        snapshot = self.snapshot(user,workspace)
         if snapshot:
             api.append_chat_message(session_id, "user",
                 "Context from my PSA Command tab, refreshed " + str(snapshot.get("generated_at", ""))[:19]
-                + ". Help me run PSA Sales and Taskbar together. Ask me before any change.\n\n"
+                + ". Help me run PSA Sales and Taskbar together. Selected sales workspace: " + workspace + ". Pass this workspace explicitly in every PSA tool call. Ask me before any change.\n\n"
                 + wrap_untrusted("PSA Sales and Taskbar overview", json.dumps(snapshot, ensure_ascii=False)[:60000]))
         return session_id
 

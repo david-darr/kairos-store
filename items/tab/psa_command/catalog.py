@@ -85,7 +85,9 @@ def urllib_transport(method, url, headers, body):
 
 
 class Connection:
-    def __init__(self, system, base_url, key, transport=None):
+    def __init__(self, system, base_url, key, transport=None, workspace=None):
+        if workspace is not None and workspace not in ('school','business'):raise ValueError('Choose school or business workspace')
+        self.workspace = workspace
         self.system = system
         self.base_url = check_base_url(base_url, system)
         self._key = check_key(key, system)
@@ -97,12 +99,23 @@ class Connection:
     def request(self, method, path, params=None, body=None):
         if not PATH_PATTERNS[self.system].fullmatch(path) and not (self.system=='psa' and any(method==verb and pattern.fullmatch(path) for verb,pattern in WORKFLOW_PATHS)):
             raise ApiError("Invalid API path")
+        workspace = self.workspace
+        if self.system == 'psa':
+            if isinstance(body, dict) and 'workspace' in body:
+                body = dict(body)
+                workspace = body.pop('workspace')
+            elif isinstance(params, dict) and 'workspace' in params:
+                workspace = params['workspace']
+            if workspace is not None and workspace not in ('school','business'):
+                raise ValueError('Choose school or business workspace')
         url = self.base_url + path
         if params:
             query = {k: str(v).lower() if isinstance(v, bool) else str(v) for k, v in params.items() if v is not None}
             if query:
                 url += "?" + urllib.parse.urlencode(query)
         headers = {"Authorization": "Bearer " + self._key, "Accept": "application/json"}
+        if workspace:
+            headers["X-PSA-Workspace"] = workspace
         if method != "GET":
             headers["Content-Type"] = "application/json"
         status, data = self._transport(method, url, headers, body if method != "GET" else None)
@@ -216,6 +229,11 @@ TOOLS.append(_tool('psa_upload_pdf_file','psa','POST','/operations/psa_upload_pd
     'Admin: upload a locally available PDF by absolute file path, without putting its bytes in chat. Requires library:manage. Use only a file the person selected or explicitly authorized. Maximum 10 MB; no URLs, network paths, symlinks or folders. Preview first, then confirm with expected_sha256. Uploading never sends mail or approves a campaign.',
     {'file_path':{'type':'string','minLength':1,'maxLength':4096},'filename':{'type':'string','minLength':1,'maxLength':150},'expected_sha256':{'type':'string','pattern':'[a-f0-9]{64}'}},['file_path'],True,
     lambda args:'Upload the selected local PDF to the shared PSA attachment catalog.'))
+# Explicit per-call context. Never change a user's saved key or global settings
+# when an agent switches between school sales and business sponsorship work.
+for tool in TOOLS:
+    if tool['system'] == 'psa':
+        tool['properties']['workspace'] = {'enum':['school','business']}
 BY_NAME = {tool["name"]: tool for tool in TOOLS}
 
 

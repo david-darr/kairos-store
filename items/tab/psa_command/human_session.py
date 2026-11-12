@@ -115,14 +115,16 @@ class HumanSession:
     def request(self,user,method,path,body=None,params=None):
         if not ((method=='GET' and READS.fullmatch(path)) or (method=='POST' and WRITES.fullmatch(path)) or (method=='PUT' and re.fullmatch(r'/api/outreach/templates/\d+',path))):
             raise ValueError('This is not a supported human approval operation')
-        if params and (not isinstance(params,dict) or set(params)-{'page','per_page','q'}):raise ValueError('Unsupported filters')
+        if params and (not isinstance(params,dict) or set(params)-{'page','per_page','q','workspace'}):raise ValueError('Unsupported filters')
+        if params and 'workspace' in params and params['workspace'] not in ('school','business'):raise ValueError('Choose school or business workspace')
         if method=='POST' and not isinstance(body,dict):raise ValueError('Supply the reviewed operation')
         if path=='/api/email-settings' and (set(body)!={'email_password'} or not isinstance(body['email_password'],str)):raise ValueError('Only your mail app password is accepted')
         entry=self.api.read_json('human-session.json',{}).get(user)
         if not entry or not self.status(user)['connected']:raise catalog.ApiError('Sign in to PSA inside Kairos first.',401)
         return self._call(entry['root'],self.api.decrypt(entry['token']),method,path,body,params)
 
-    def upload(self,user,kind,filename,encoded):
+    def upload(self,user,kind,filename,encoded,workspace='school'):
+        if workspace not in ('school','business'):raise ValueError('Choose school or business workspace')
         if kind not in ('pdf','templates'):raise ValueError('Choose PDF catalog or template import')
         extension='.pdf' if kind=='pdf' else '.json'
         if not isinstance(filename,str) or not re.fullmatch(r'[A-Za-z0-9 _.-]{1,150}',filename) or not filename.lower().endswith(extension):raise ValueError('Choose a valid '+extension+' filename')
@@ -137,7 +139,7 @@ class HumanSession:
         mime='application/pdf' if kind=='pdf' else 'application/json'
         data=(f'--{boundary}\r\nContent-Disposition: form-data; name="file"; filename="{filename}"\r\nContent-Type: {mime}\r\n\r\n'.encode()+raw+f'\r\n--{boundary}--\r\n'.encode())
         path='/api/outreach/template-assets' if kind=='pdf' else '/api/outreach/template-imports/preview'
-        headers={'Authorization':'Bearer '+self.api.decrypt(entry['token']),'Content-Type':'multipart/form-data; boundary='+boundary}
+        headers={'Authorization':'Bearer '+self.api.decrypt(entry['token']),'Content-Type':'multipart/form-data; boundary='+boundary,'X-PSA-Workspace':workspace}
         status,result=(self.transport or catalog.urllib_transport)('POST',entry['root']+path,headers,data)
         if status>=400:raise catalog.ApiError('PSA upload failed: '+str(result.get('error','Request failed'))[:200],status)
         return result

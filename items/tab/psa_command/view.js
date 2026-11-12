@@ -1,4 +1,4 @@
-import { api, el, toast, confirmDialog, emptyState } from "/static/js/api.js";
+import { api as kairosApi, el, toast, confirmDialog, emptyState } from "/static/js/api.js";
 import { mountSessionChat } from "/static/js/sessionChat.js";
 
 const BASE = "/api/tab-psa-command";
@@ -31,23 +31,45 @@ function isoFromDate(value) {
 
 export async function render(container) {
   container.replaceChildren();
+  let salesArea=sessionStorage.getItem('psa-command-sales-area')==='business'?'business':'school';
+  function api(path,options={}) {
+    if(path.startsWith(BASE+'/overview')||path===BASE+'/chat')path+=(path.includes('?')?'&':'?')+'workspace='+salesArea;
+    if(options.body && (path===BASE+'/action'||path===BASE+'/human-request'||path===BASE+'/human-upload')) {
+      const body=JSON.parse(options.body);
+      if(path===BASE+'/action'&&body.tool?.startsWith('psa_'))body.arguments={...body.arguments,workspace:salesArea};
+      if(path===BASE+'/human-upload')body.workspace=salesArea;
+      if(path===BASE+'/human-request')body.params={...body.params,workspace:salesArea};
+      options={...options,body:JSON.stringify(body)};
+    }
+    return kairosApi(path,options);
+  }
   let disposed = false, mode = "overview", data = null, settings = null, closeChat = () => {}, loadToken = 0;
   let nativePane='guide',nativeToken=0,nativePage=1;
   const wrap = el("div", { class: "view-constrained psa-view" });
   const actions = el("div", { class: "psa-actions" });
   const heading = el("div", { class: "view-header" }, [
     el("div", {}, [el("h2", { text: "PSA Command" }),
-      el("div", { class: "sub", text: "Your schools, outreach and daily work. Review changes here without opening another app." })]),
+      el("div", { class: "sub", text: "Your sales relationships, outreach and daily work. Review changes here without opening another app." })]),
     actions,
   ]);
   const tabs = el("nav", { class: "psa-tabs", "aria-label": "PSA Command sections" });
     const mobileSection = el("select", {class:"psa-mobile-section", "aria-label":"PSA Command section"});
-    for (const [value,text] of [["overview","My work"],["outreach","Email outreach"],["actions","Tasks & school updates"],["connections","Account & setup"]]) mobileSection.append(el("option",{value,text}));
+    for (const [value,text] of [["overview","My work"],["outreach","Email outreach"],["actions","Tasks & relationship updates"],["connections","Account & setup"]]) mobileSection.append(el("option",{value,text}));
     mobileSection.addEventListener("change",()=>{mode=mobileSection.value;draw();mobileSection.focus();});
   const content = el("div");
   const chatHost = el("div", { class: "psa-chat card", hidden: true });
     wrap.append(heading, tabs, mobileSection, content, chatHost);
   container.append(wrap);
+  const areaSelect=el('select',{class:'psa-sales-area','aria-label':'Sales workspace'});
+  areaSelect.append(el('option',{value:'school',text:'School Sales'}),el('option',{value:'business',text:'Business Sales'}));
+  areaSelect.value=salesArea;
+  areaSelect.addEventListener('change',async()=>{
+    salesArea=areaSelect.value;sessionStorage.setItem('psa-command-sales-area',salesArea);
+    data=null;nativeToken++;nativePage=1;nativePane='guide';
+    closeChat();closeChat=()=>{};chatHost.hidden=true;chatHost.replaceChildren();
+    await load(true);
+  });
+  actions.prepend(areaSelect);
 
   function button(text, action, kind = "") {
     const node = el("button", { class: "btn " + kind, text, type: "button" });
@@ -141,7 +163,7 @@ export async function render(container) {
     try{
       const session=await api(BASE+'/human-session');if(!active())return;
       if(!session.connected){host.replaceChildren(nativeConnectionCard());return;}
-      const groups=[['guide','Start here','guide'],['sending','Review & send','campaigns'],['inbox','School replies','inbox'],['library','Templates & PDFs','library']];
+      const groups=[['guide','Start here','guide'],['sending','Review & send','campaigns'],['inbox',salesArea==='business'?'Business replies':'School replies','inbox'],['library','Templates & PDFs','library']];
       const selectedGroup=['campaigns','requests','followups','progress'].includes(nativePane)?'sending':nativePane;
       const controls=el('nav',{class:'psa-tabs','aria-label':'Email tasks'});
       controls.classList.add('psa-outreach-desktop-nav');
@@ -352,7 +374,7 @@ export async function render(container) {
     const checks=assets.saved.map(a=>[a,el('input',{type:'checkbox'})]);let current=null;
     choose.onchange=()=>{current=templates.items.find(t=>t.id===Number(choose.value));name.value=current?.name||'';subject.value=current?.subject||'';copy.value=current?.body||'';kind.value=current?.kind||'initial';audience.value=current?.audience||'general';step.value=String(current?.step||0);archive.checked=Boolean(current?.archived);checks.forEach(([a,box])=>{box.checked=Boolean(current?.attachments?.some(t=>t.id===a.id));});};
     kind.onchange=()=>{step.value=kind.value==='initial'?'0':'1';};
-    form.append(field('Edit saved template',choose),field('Name',name),field('Type',kind),field('Audience',audience),field('Step',step),field('Subject',subject),field('Message',copy),el('p',{class:'meta',text:'Fields: {school name}, {contact name}, {my name}, {my email}. Selected PDFs will be included every time this template is used.'}));
+    form.append(field('Edit saved template',choose),field('Name',name),field('Type',kind),field('Audience',audience),field('Step',step),field('Subject',subject),field('Message',copy),el('p',{class:'meta',text:'Fields: {school name} or {business name}, {contact name}, {my name}, {my email}. Selected PDFs will be included every time this template is used.'}));
     checks.forEach(([a,box])=>form.append(el('label',{},[box,document.createTextNode(' '+a.name)])));
     form.append(el('label',{},[archive,document.createTextNode(' Archive template')]),button('Save template version',async()=>{
       const values={name:name.value,kind:kind.value,audience:audience.value,step:Number(step.value),subject:subject.value,body:copy.value,attachment_ids:checks.filter(([,box])=>box.checked).map(([a])=>a.id),archived:archive.checked,...(current?{revision:current.revision}:{})};
@@ -379,7 +401,7 @@ export async function render(container) {
 
   function drawTabs() {
     mobileSection.value=mode;
-    tabs.replaceChildren(...[["overview", "My work"], ["outreach", "Email outreach"], ["actions", "Tasks & school updates"], ["connections", "Account & setup"]].map(([key, text]) =>
+    tabs.replaceChildren(...[["overview", "My work"], ["outreach", "Email outreach"], ["actions", "Tasks & relationship updates"], ["connections", "Account & setup"]].map(([key, text]) =>
       el("button", { class: "btn quiet" + (mode === key ? " active" : ""), text, type: "button",
           "aria-pressed": String(mode === key), onclick: () => {
             mode = key; draw();
@@ -465,10 +487,10 @@ export async function render(container) {
       el("div", {class: "psa-status"}, [systemStatus("psa"), systemStatus("taskbar"),
         el("span", {class: "meta", text: data?.generated_at ? "Updated " + new Date(data.generated_at).toLocaleTimeString([], {hour: "numeric", minute: "2-digit"}) : ""})])]);
 
-    const portfolio = el("section", {class: "card psa-portfolio", "aria-label": "School portfolio"}, [
-      el("div", {class: "psa-column-head"}, [el("h3", {text: "School portfolio"}),
+    const portfolio = el("section", {class: "card psa-portfolio", "aria-label": (salesArea==='business'?"Sponsorship portfolio":"School portfolio")}, [
+      el("div", {class: "psa-column-head"}, [el("h3", {text: (salesArea==='business'?"Sponsorship portfolio":"School portfolio")}),
         el("span", {class: "meta", text: psa.admin ? "Team overview" : "Your schools"})]),
-      el("div", {class: "psa-portfolio-total"}, [el("strong", {text: totals.schools ?? "Not available"}), el("span", {class: "meta", text: "Schools in your workspace"})])]);
+      el("div", {class: "psa-portfolio-total"}, [el("strong", {text: totals.schools ?? "Not available"}), el("span", {class: "meta", text: salesArea==='business'?"Businesses in your workspace":"Schools in your workspace"})])]);
     if (!healthy) {
       portfolio.append(el("p", {class: "meta", text: psa.error || "Connect your PSA account to see your schools and outreach."}),
         button("Open account & setup", () => navigate("connections")));
@@ -499,7 +521,7 @@ export async function render(container) {
     if (healthy && (psa.reps || []).length) {
       const table = el("table", {class: "psa-table"}, [
         el("caption", {text: "Schools, active clients and overdue work by sales rep"}),
-        el("thead", {}, [el("tr", {}, ["Sales rep", "Schools", "Pipeline", "Active clients", "Closed this month", "Overdue"].map(h => el("th", {text: h, scope: "col"})))]),
+        el("thead", {}, [el("tr", {}, ["Sales rep", salesArea==='business'?"Businesses":"Schools", "Pipeline", salesArea==='business'?"Active sponsors":"Active clients", "Closed this month", "Overdue"].map(h => el("th", {text: h, scope: "col"})))]),
         el("tbody", {}, psa.reps.map(rep => el("tr", {}, [rep.name, rep.schools, rep.pipeline, rep.active_clients, rep.closes_this_month, rep.overdue_tasks].map(v => el("td", {text: String(v ?? "-")}))))) ]);
       table.classList.add("psa-team-desktop");
       const cards=el("div",{class:"psa-team-mobile"},psa.reps.map(rep=>el("section",{class:"psa-rep-summary"},[
@@ -581,7 +603,7 @@ export async function render(container) {
       const reassign = schoolPicker(), rep = el("select", { "aria-label": "New owner" });
       repOptions(rep, data?.psa?.admin ? "Choose a rep" : "Administrator key required");
       panels.push(el("div", { class: "card psa-form" }, [el("div", { class: "title", text: "Reassign a school" }),
-        reassign.node, field("School", reassign.select), field("New owner", rep),
+        reassign.node, field(salesArea==='business'?"Business":"School", reassign.select), field("New owner", rep),
         button("Review and send", async () => {
           if (!reassign.select.value || !rep.value) throw new Error("Choose a school and a rep");
           await perform("psa_assign_schools", { ids: [Number(reassign.select.value)], user_id: Number(rep.value) });
@@ -592,7 +614,7 @@ export async function render(container) {
       options(kind, [["call", "Call"], ["meeting", "Meeting"], ["note", "Note"]], "Choose a type");
       kind.value = "call";
       panels.push(el("div", { class: "card psa-form" }, [el("div", { class: "title", text: "Log activity" }),
-        logged.node, field("School", logged.select), field("Type", kind), field("Details", detail),
+        logged.node, field(salesArea==='business'?"Business":"School", logged.select), field("Type", kind), field("Details", detail),
         button("Review and send", async () => {
           if (!logged.select.value || !detail.value.trim()) throw new Error("Choose a school and enter details");
           if (await perform("psa_log_activity", { school_id: Number(logged.select.value), kind: kind.value, detail: detail.value.trim() })) detail.value = "";

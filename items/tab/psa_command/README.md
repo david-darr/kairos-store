@@ -56,3 +56,8 @@ Use `psa_upload_pdf_file` with an explicitly selected absolute `.pdf` path on th
 The PDF must be a regular locally available file, at most 10 MiB. Relative/network/device paths, URLs, symlinks, reparse points and folders are rejected. A path refers to the MCP server's computer, not the cloud PSA backend. Download or sync Drive PDFs locally before using this tool; private Drive IDs are not resolved and Google credentials are never extracted.
 
 After updating, Check the PSA Command MCP connection and review/accept the new tool in Tool Store > Tools before using it in a chat. Normal tab-source approval/reload still applies. No new PSA key is required.
+
+
+## School Sales / Business Sales (1.5.0 draft)
+
+Choose the sales workspace in PSA Command. Requests, private reviews, template JSON uploads and overview caches stay in that area; PDFs, sign-in and the existing saved API key stay shared. Chat tools accept `workspace: "business"` explicitly; new business search/create/edit tools default to Business Sales. Employee/admin and ownership rules still apply. Publish only after the compatible PSA backend migration and release. Updating source files never clears `connections.json`, `human-session.json` or tab encryption data.

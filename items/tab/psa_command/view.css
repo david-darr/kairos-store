@@ -130,3 +130,6 @@
   .psa-view .psa-native-stack .psa-actions { align-items:stretch;flex-direction:column; }
   .psa-view input[type=checkbox] { width:20px;height:20px;vertical-align:middle; }
 }
+
+.psa-sales-area { min-height:44px; max-width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:8px; color:var(--text); background:var(--surface); font:inherit; }
+.psa-sales-area:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }

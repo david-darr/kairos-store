@@ -746,6 +746,12 @@
         "limit": {
           "type": "string",
           "maxLength": 20000
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [],
@@ -764,7 +770,14 @@
     "description": "Read your name, phone and mailbox connection status. Never returns mail credentials. Requires read.",
     "inputSchema": {
       "type": "object",
-      "properties": {},
+      "properties": {
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
+        }
+      },
       "required": [],
       "additionalProperties": false
     },
@@ -789,6 +802,12 @@
         "phone": {
           "type": "string",
           "maxLength": 20000
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [],
@@ -826,6 +845,12 @@
             "partner",
             "former",
             "not_interested"
+          ]
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
           ]
         }
       },
@@ -881,6 +906,10 @@
           "type": "string",
           "maxLength": 20000
         },
+        "industry": {
+          "type": "string",
+          "maxLength": 20000
+        },
         "additional_emails": {
           "type": "array",
           "items": {
@@ -891,6 +920,12 @@
         },
         "shared_contact_confirmed": {
           "type": "boolean"
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -962,6 +997,14 @@
           "type": "string",
           "maxLength": 20000
         },
+        "industry": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "sponsorship_value": {
+          "type": "string",
+          "maxLength": 20000
+        },
         "school_id": {
           "type": "integer",
           "minimum": 1
@@ -984,6 +1027,12 @@
             "maxLength": 20000
           },
           "maxItems": 50
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -1013,6 +1062,12 @@
           },
           "minItems": 1,
           "maxItems": 100
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -1078,6 +1133,12 @@
         "school_suppression_reason": {
           "type": "string",
           "maxLength": 20000
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -1152,6 +1213,12 @@
         "school_suppression_reason": {
           "type": "string",
           "maxLength": 20000
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -1190,6 +1257,12 @@
         "detail": {
           "type": "string",
           "maxLength": 20000
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -1266,6 +1339,12 @@
             }
           },
           "additionalProperties": false
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -1290,6 +1369,12 @@
         "review_id": {
           "type": "string",
           "pattern": "^[A-Za-z0-9_-]{1,100}$"
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -1314,6 +1399,12 @@
         "school_id": {
           "type": "integer",
           "minimum": 1
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -1373,6 +1464,12 @@
         "page_token": {
           "type": "string",
           "maxLength": 20000
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [],
@@ -1395,6 +1492,12 @@
         "place_id": {
           "type": "string",
           "maxLength": 20000
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -1468,6 +1571,12 @@
         "assign_to": {
           "type": "integer",
           "minimum": 1
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -1508,6 +1617,12 @@
         "scope": {
           "type": "string",
           "maxLength": 20000
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [],
@@ -1531,6 +1646,12 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 50
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [],
@@ -1549,7 +1670,14 @@
     "description": "Read saved PSA, partner and elementary prospect map layers. Requires read.",
     "inputSchema": {
       "type": "object",
-      "properties": {},
+      "properties": {
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
+        }
+      },
       "required": [],
       "additionalProperties": false
     },
@@ -1566,7 +1694,14 @@
     "description": "Admin: refresh saved prospect map layers from their configured source. Requires write.",
     "inputSchema": {
       "type": "object",
-      "properties": {},
+      "properties": {
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
+        }
+      },
       "required": [],
       "additionalProperties": false
     },
@@ -1621,6 +1756,12 @@
             ],
             "additionalProperties": false
           }
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -1646,6 +1787,12 @@
         "template_id": {
           "type": "integer",
           "minimum": 1
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -1701,6 +1848,12 @@
             "maxLength": 20000
           },
           "maxItems": 3
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -1771,6 +1924,12 @@
             "maxLength": 20000
           },
           "maxItems": 3
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -1792,7 +1951,14 @@
     "description": "Admin: add missing Winter 2027 templates without replacing later edits. Requires library:manage.",
     "inputSchema": {
       "type": "object",
-      "properties": {},
+      "properties": {
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
+        }
+      },
       "required": [],
       "additionalProperties": false
     },
@@ -1813,6 +1979,12 @@
         "filename": {
           "type": "string",
           "maxLength": 20000
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -1841,6 +2013,12 @@
         "encoded": {
           "type": "string",
           "maxLength": 13981016
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -1870,6 +2048,12 @@
         "encoded": {
           "type": "string",
           "maxLength": 1398104
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -1895,6 +2079,12 @@
         "review_id": {
           "type": "string",
           "pattern": "^[A-Za-z0-9_-]{1,100}$"
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -1962,6 +2152,12 @@
             ],
             "additionalProperties": false
           }
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -2041,6 +2237,12 @@
             ],
             "additionalProperties": false
           }
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -2066,6 +2268,12 @@
         "sequence_id": {
           "type": "integer",
           "minimum": 1
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -2098,6 +2306,12 @@
         "per_page": {
           "type": "string",
           "maxLength": 20000
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [],
@@ -2116,7 +2330,14 @@
     "description": "Read the connected employee daily sending allowance. Requires outreach:read.",
     "inputSchema": {
       "type": "object",
-      "properties": {},
+      "properties": {
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
+        }
+      },
       "required": [],
       "additionalProperties": false
     },
@@ -2133,7 +2354,14 @@
     "description": "Read outreach campaign IDs and their current daily caps. Does not authorize sending. Requires outreach:read.",
     "inputSchema": {
       "type": "object",
-      "properties": {},
+      "properties": {
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
+        }
+      },
       "required": [],
       "additionalProperties": false
     },
@@ -2163,6 +2391,12 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 1000
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -2185,7 +2419,14 @@
     "description": "Read sending worker freshness and queue status. Requires outreach:read.",
     "inputSchema": {
       "type": "object",
-      "properties": {},
+      "properties": {
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
+        }
+      },
       "required": [],
       "additionalProperties": false
     },
@@ -2210,6 +2451,12 @@
         "rep_id": {
           "type": "integer",
           "minimum": 1
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [],
@@ -2281,6 +2528,12 @@
         "revision": {
           "type": "integer",
           "minimum": 1
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -2365,6 +2618,12 @@
         "revision": {
           "type": "integer",
           "minimum": 1
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -2398,6 +2657,12 @@
         "record_id": {
           "type": "integer",
           "minimum": 1
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -2425,6 +2690,12 @@
         },
         "admin": {
           "type": "boolean"
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -2446,7 +2717,14 @@
     "description": "Admin: list employee join-link metadata. Requires read.",
     "inputSchema": {
       "type": "object",
-      "properties": {},
+      "properties": {
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
+        }
+      },
       "required": [],
       "additionalProperties": false
     },
@@ -2480,6 +2758,12 @@
         "label": {
           "type": "string",
           "maxLength": 20000
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -2505,6 +2789,12 @@
         "link_id": {
           "type": "integer",
           "minimum": 1
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
         }
       },
       "required": [
@@ -2519,6 +2809,243 @@
     },
     "method": "POST",
     "path": "/operations/psa_revoke_join_link"
+  },
+  {
+    "name": "psa_businesses",
+    "description": "Search Business Sales prospects and sponsors. Employee ownership rules apply. Requires read.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "q": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "stage": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "owner": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "county": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "scope": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "page": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "limit": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    },
+    "method": "POST",
+    "path": "/operations/psa_businesses"
+  },
+  {
+    "name": "psa_business",
+    "description": "Read one Business Sales prospect, notes and conversation timeline. Requires read.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "school_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
+        }
+      },
+      "required": [
+        "school_id"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    },
+    "method": "POST",
+    "path": "/operations/psa_business"
+  },
+  {
+    "name": "psa_create_business",
+    "description": "Add a Business Sales prospect with duplicate checks. Never sends email. Requires write.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "business_name": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "email": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "contact_name": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "phone": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "address": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "website": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "county": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "industry": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "shared_contact_confirmed": {
+          "type": "boolean"
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
+        }
+      },
+      "required": [
+        "business_name",
+        "email"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "openWorldHint": false
+    },
+    "method": "POST",
+    "path": "/operations/psa_create_business"
+  },
+  {
+    "name": "psa_edit_business",
+    "description": "Edit business details, sponsorship value, stage, notes, next action or owner (admin only). Requires write.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "business_name": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "email": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "contact_name": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "phone": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "address": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "website": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "county": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "industry": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "sponsorship_value": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "status": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "next_action": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "next_action_at": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "business_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "user_id": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "workspace": {
+          "enum": [
+            "school",
+            "business"
+          ]
+        }
+      },
+      "required": [
+        "business_id"
+      ],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "openWorldHint": false
+    },
+    "method": "POST",
+    "path": "/operations/psa_edit_business"
   },
   {
     "name": "psa_capabilities",

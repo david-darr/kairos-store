@@ -38,11 +38,12 @@ class UploadRequest(BaseModel):
     kind: str
     filename: str
     encoded: str
+    workspace: str = "school"
 
 
 @router.post('/human-upload')
 async def human_upload(body: UploadRequest,user: str = Depends(require_user)):
-    try:return await asyncio.to_thread(psa_service.human.upload,user,body.kind,body.filename,body.encoded)
+    try:return await asyncio.to_thread(psa_service.human.upload,user,body.kind,body.filename,body.encoded,body.workspace)
     except ValueError as error:raise HTTPException(status_code=400,detail=str(error))
     except catalog.ApiError as error:raise HTTPException(status_code=error.status if error.status in (400,401,403,409,413) else 502,detail=str(error))
 
@@ -122,10 +123,11 @@ async def test_connection(system: str, user: str = Depends(require_user)) -> dic
 
 
 @router.get("/overview")
-async def get_overview(refresh: bool = False, user: str = Depends(require_user)) -> dict:
-    snapshot = psa_service.snapshot(user)
+async def get_overview(refresh: bool = False, workspace: str = "school", user: str = Depends(require_user)) -> dict:
+    if workspace not in ("school","business"):raise HTTPException(status_code=400,detail="Choose school or business workspace")
+    snapshot = psa_service.snapshot(user,workspace)
     if refresh or snapshot is None:
-        snapshot = await psa_service.refresh(user)
+        snapshot = await psa_service.refresh(user,workspace)
     return snapshot
 
 
@@ -168,5 +170,6 @@ async def chat_tools(user: str = Depends(require_user)) -> dict:
 
 
 @router.post("/chat")
-async def open_chat(user: str = Depends(require_user)) -> dict:
-    return {"session_id": psa_service.brief_chat(user)}
+async def open_chat(workspace: str = "school", user: str = Depends(require_user)) -> dict:
+    if workspace not in ("school","business"):raise HTTPException(status_code=400,detail="Choose school or business workspace")
+    return {"session_id": psa_service.brief_chat(user,workspace)}
