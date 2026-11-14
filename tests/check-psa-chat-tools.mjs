@@ -1,0 +1,14 @@
+﻿import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+const source=(await readFile(new URL('../items/tab/psa_command/view.js',import.meta.url),'utf8')).replace(/^import .*;\r?\n/gm,'');
+const { chatToolHealth }=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+const setup={systems:['psa','taskbar']};
+const existing={status:{state:'working',tools:8},args:['mcp_bridge.py','--psa-url','https://example.test','--taskbar-url','https://taskbar.test'],held_tools:[{name:'psa_schools',description:'Read schools',kind:'changed'},{name:'taskbar_new',description:'Taskbar tool',kind:'new'}]};
+assert.equal(chatToolHealth(existing,setup).held.length,1);
+assert.match(chatToolHealth(existing,setup).message,/hidden from chats and scheduled automations/);
+assert.match(chatToolHealth({...existing,held_tools:[]},setup).message,/Ready/);
+assert.match(chatToolHealth({...existing,status:{state:'failed',error:'Unavailable'}},setup).message,/failed/);
+assert.match(chatToolHealth({...existing,enabled:false},setup).message,/switched off/);
+const missing=chatToolHealth({...existing,args:['--taskbar-url','https://taskbar.test'],held_tools:[]},setup);
+assert.deepEqual(missing.missing,['psa']);assert.match(missing.message,/missing PSA Sales/);
+console.log('PSA chat health checks passed: held, ready, failed, disabled and missing configuration.');

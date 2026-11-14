@@ -4,6 +4,20 @@ import { mountSessionChat } from "/static/js/sessionChat.js";
 const BASE = "/api/tab-psa-command";
 const LABEL = { psa: "PSA Sales", taskbar: "Taskbar" };
 
+// Pure status projection: a reachable bridge may still hide changed tools.
+export function chatToolHealth(existing, setup) {
+  const held = (existing.held_tools || []).filter(tool => tool.name?.startsWith('psa_'));
+  const missing = (setup.systems || []).filter(system => !(existing.args || []).includes(`--${system}-url`));
+  const available = existing.status?.tools;
+  let message;
+  if (existing.enabled === false) message = 'PSA Command chat tools are switched off. Enable this connection in Tool Store > Tools.';
+  else if (existing.status?.state !== 'working') message = 'The last connection check failed: ' + (existing.status?.error || 'not checked yet') + '. Run Check again.';
+  else if (held.length) message = `${held.length} PSA Sales tools need your review. They are hidden from chats and scheduled automations until enabled. Taskbar can still work while PSA tools are held.`;
+  else if (missing.length) message = 'This chat connection is missing ' + missing.map(system => LABEL[system]).join(' and ') + '. Its saved configuration needs updating.';
+  else message = `Ready with ${available ?? 'available'} tools. Select PSA Command in the chat or bot that will use it.`;
+  return { held, missing, message };
+}
+
 function statusLabel(value) {
   return ({awaiting:'Needs your review',approved:'Approved',scheduled:'Approved and scheduled',running:'Sending',queued:'Waiting to send',sending:'Sending',done:'Finished',completed:'Finished',paused:'Paused',cancelled:'Stopped',expired:'Approval ended',revoked:'Access removed',unconfirmed:'Check your Sent folder',waiting:'Not sent yet'})[value] || String(value||'Not available').replaceAll('_',' ');
 }
@@ -664,7 +678,11 @@ export async function render(container) {
     (async () => {
       const setup = await api(BASE + "/chat-tools").catch(() => null);
       const servers = await api("/api/integrations").catch(() => null);
-      if (disposed || !setup) return;
+      if (disposed || !card.isConnected) return;
+      if (!setup) {
+        card.replaceChildren(el("div", {class:"title",text:"Chat tool setup could not load"}), el("p", {class:"meta",text:"Your saved connections are unchanged. Reopen Account & setup to retry."}));
+        return;
+      }
       const existing = (servers || []).find((item) => item.kind === "mcp_server" && item.name === setup.name);
       const manual = el("details", {}, [el("summary", { text: "Set up by hand" }),
         el("div", { class: "meta", text: "Tool Store > MCP servers > add a local (stdio) server named " + setup.name + "." }),
@@ -675,12 +693,21 @@ export async function render(container) {
       if (!setup.systems.length) {
         body.push(el("div", { class: "meta", text: "Save PSA Sales or Taskbar above first." }));
       } else if (existing) {
-        const state = existing.status?.state, count = existing.status?.tools;
-        body.push(el("div", { class: "meta", text: state === "working"
-          ? `Added to Kairos with ${count ?? "its"} tools. In any existing or new chat, select PSA Command in that chat's Integrations menu. Ask it to check PSA capabilities before starting.`
-          : "Added to Kairos, but its last check failed: " + (existing.status?.error || "not checked yet") + "." }));
-        if (setup.systems.some((system) => !existing.args?.includes(`--${system}-url`)))
-          body.push(el("div", { class: "meta psa-warn", text: "It was added before every system was connected. Remove " + setup.name + " in Tool Store and add it again here." }));
+        const health = chatToolHealth(existing, setup);
+        body.push(el("div", { class: "meta" + (health.held.length || health.missing.length ? " psa-warn" : ""), role: "status", text: health.message }));
+        if (health.held.length) {
+          body.push(el("details", {}, [el("summary", {text: "Review changed PSA Sales tools"}),
+            ...health.held.map(tool => el("div", {class: "psa-form"}, [el("strong", {text: tool.name}), el("div", {class:"meta",text:tool.description || "No description provided."})]))]));
+          body.push(button("Enable reviewed PSA tools", async () => {
+            const names = health.held.map(tool => tool.name);
+            const ok = await confirmDialog({title:"Enable reviewed PSA Sales tools?", message:"Allow these new or changed tools in chats and automations: " + names.join(", ") + ". Employee permissions still apply. This does not run tasks, send mail, or change keys.",confirmLabel:"Enable reviewed tools"});
+            if (!ok || disposed) return;
+            const updated = await api(`/api/integrations/${existing.id}/tools/accept`, {method:"POST",body:JSON.stringify({names})});
+            toast(updated.held_tools?.some(tool => tool.name.startsWith('psa_')) ? "Some tools still need review. Run Check again." : "PSA tools enabled. Retry a read-only check before resuming automation.");
+            if (!disposed && card.isConnected) card.replaceWith(chatToolsCard());
+          }, "primary"));
+        }
+        if (health.missing.length) body.push(el("div", {class:"meta psa-warn",text:"Keep this connection and its keys. In Tool Store > Tools, edit its arguments using the setup below and supply any missing system key, then Check. Do not remove and recreate it; bots and scheduled jobs may reference its existing ID."}));
         body.push(el("div", { class: "psa-actions" }, [button("Check again", async () => {
           await api(`/api/integrations/${existing.id}/check`, { method: "POST" });
           card.replaceWith(chatToolsCard());

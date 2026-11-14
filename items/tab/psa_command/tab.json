@@ -1,7 +1,7 @@
 {
   "slug": "psa_command",
   "name": "PSA Command",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Run PSA Sales inside Kairos: employee sign-in, agent preparation, native approvals and follow-up controls.",
   "api": 1,
   "hooks": [

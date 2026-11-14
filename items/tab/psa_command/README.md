@@ -58,6 +58,27 @@ The PDF must be a regular locally available file, at most 10 MiB. Relative/netwo
 After updating, Check the PSA Command MCP connection and review/accept the new tool in Tool Store > Tools before using it in a chat. Normal tab-source approval/reload still applies. No new PSA key is required.
 
 
-## School Sales / Business Sales (1.5.0 draft)
+## School Sales / Business Sales (1.5.0)
 
 Choose the sales workspace in PSA Command. Requests, private reviews, template JSON uploads and overview caches stay in that area; PDFs, sign-in and the existing saved API key stay shared. Chat tools accept `workspace: "business"` explicitly; new business search/create/edit tools default to Business Sales. Employee/admin and ownership rules still apply. Publish only after the compatible PSA backend migration and release. Updating source files never clears `connections.json`, `human-session.json` or tab encryption data.
+
+
+## Restoring tools held for review (1.5.1)
+
+The 1.5.0 workspace selector added an optional workspace argument to PSA tool
+schemas. Existing Kairos connections hold changed/new tools for explicit human
+review. Unchanged Taskbar tools and sales_overview can remain available, so a
+reachable server does not mean all PSA tools are enabled. This is not evidence
+that the PSA API key lost its scope.
+
+For immediate recovery with any installed version: open Tool Store > Tools,
+find the existing PSA Command connection, run Check, review its held PSA tools
+and accept them. Keep the connection ID and keys. Do not remove/recreate the
+connection: scheduled jobs and bots may reference its ID. Retry a read-only
+PSA school/team check before resuming hand-offs; do not replay missed writes.
+
+PSA Command 1.5.1 also shows held PSA tools under Account & setup, with a list
+and an explicit Enable reviewed PSA tools button. Acceptance happens only on
+that human click through Kairos's authenticated review endpoint. Nothing is
+automatically accepted. No task runs, emails, permissions or credentials change.
+This patch leaves every 1.5.0 tool name, description and input schema unchanged.
