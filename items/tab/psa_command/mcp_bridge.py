@@ -78,7 +78,7 @@ def handle(message, connections):
     if method == "initialize":
         version = (message.get("params") or {}).get("protocolVersion")
         return reply({"protocolVersion": version if version in PROTOCOLS else "2025-03-26",
-                      "capabilities": {"tools": {}}, "serverInfo": {"name": "psa-command", "version": "1.5.1"},
+                      "capabilities": {"tools": {}}, "serverInfo": {"name": "psa-command", "version": "1.5.2"},
                       "instructions": INSTRUCTIONS})
     if method == "ping":
         return reply({})

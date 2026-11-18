@@ -82,3 +82,13 @@ and an explicit Enable reviewed PSA tools button. Acceptance happens only on
 that human click through Kairos's authenticated review endpoint. Nothing is
 automatically accepted. No task runs, emails, permissions or credentials change.
 This patch leaves every 1.5.0 tool name, description and input schema unchanged.
+
+
+## PSA operations additions (1.5.2)
+
+Adds six tools for duplicate warnings, reviewed profile merging, outreach
+results/daily summaries, Taskbar sync status and Low/Normal/High task priority.
+Existing tool definitions are unchanged. Kairos will hold only the six NEW tools
+for human review; existing accepted PSA tools remain available. Review and accept
+new tools in the existing connection if you want to use them. Keep connection
+IDs and keys. Requires the compatible PSA backend checklist release.

@@ -24,7 +24,8 @@ class PSACommandDiscoveryTests(unittest.TestCase):
 
     def test_patch_preserves_all_previously_published_tool_pins(self):
         previous=json.loads((ROOT/'tests/fixtures/psa-command-1.5.0-pins.json').read_text())
-        self.assertEqual(self.pins(),previous)
+        self.assertEqual({name:self.pins()[name] for name in previous},previous)
+        self.assertEqual(set(self.pins())-set(previous),{'psa_record_duplicates','psa_preview_record_merge','psa_commit_record_merge','psa_outreach_reporting','psa_taskbar_sync_status','psa_update_task_priority'})
 
     def test_workspace_upgrade_reproduces_chris_partial_tool_list(self):
         previous=json.loads((ROOT/'tests/fixtures/psa-command-1.4.3-pins.json').read_text())
